@@ -1,44 +1,68 @@
 import { Configuration } from "webpack";
 import * as path from "path";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
-
+import webpack from "webpack";
+const { ModuleFederationPlugin } = webpack.container;
+import { ManifestPlugin } from './webpack/plugins/manifest-plugin';
 // webpack configs
 import * as WebpackRules from "./webpack/rules";
 import * as WebpackResolves from "./webpack/resolves";
-import * as WebpackModuleFederation from "./webpack/moduleFederation";
 
 export default (): Configuration => {
   const config: Configuration = {
     target: "web",
     devtool: "source-map",
-    mode: "development",
+    mode: "production",
     entry: {
       index: path.resolve("./src/client/index.ts"),
+      // shared modules?
     },
     output: {
-      uniqueName: "main", // in package
+      uniqueName: "host", // in package
       publicPath: "auto",
-      filename: "main.js",
-      chunkFilename: "[name].[contenthash].js",
+      chunkFilename: () => {
+        // console.log(name);
+        return "[name].[contenthash].js";
+      },
       path: path.resolve("./dist/client"),
     },
     plugins: [
       new CleanWebpackPlugin(),
-      WebpackModuleFederation.client,
-      // new ForkTsCheckerWebpackPlugin({
-      //   async: true,
-      // }),
+      new ManifestPlugin({
+        statsOptions: {
+          outputPath: false,
+          cached: false,
+          cachedAssets: false,
+          chunks: false,
+          chunkModules: false,
+          chunkOrigins: false,
+          modules: false,
+          nestedModules: false,
+          reasons: false,
+          relatedAssets: false,
+        },
+        output: path.resolve("./dist/client/manifest.json"),
+      }),
+      new ModuleFederationPlugin({
+        name: "host", // build name by package.json
+        shared: {
+          react: { singleton: true, requiredVersion: "18.2.0" }, // to external
+          "react-dom": { singleton: true, requiredVersion: "18.2.0" }, // to external
+          moment: { singleton: true },
+        },
+      }),
     ],
     resolve: WebpackResolves.common,
     module: {
       rules: [...WebpackRules.common],
     },
     optimization: {
+      runtimeChunk: 'single',
       splitChunks: {
         chunks: "all",
         maxInitialRequests: Infinity,
         minSize: 0,
-        name: 'vendor',
+        name: "vendor",
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
@@ -48,7 +72,8 @@ export default (): Configuration => {
               const packageName = module.context.match(
                 /[\\/]node_modules[\\/](.*?)([\\/]|$)/
               )[1];
-              return `/vendor/npm.${packageName.replace("@", "")}`;
+              // console.log("packageName", module.context);
+              return `/vendor/${packageName.replace("@", "")}`;
             },
           },
         },

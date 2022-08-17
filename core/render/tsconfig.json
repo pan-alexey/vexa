@@ -14,8 +14,8 @@
     "moduleResolution": "node",
     "types": [
       "node",
-      "webpack-env",
-      "jest"
+      "jest",
+      "webpack/module"
     ],
   },
   "files": [

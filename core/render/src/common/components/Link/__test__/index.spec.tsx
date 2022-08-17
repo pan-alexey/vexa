@@ -9,7 +9,6 @@ describe("App", () => {
         <Link page={"test"}>test</Link>
       </div>
     );
-
     console.log(screen.getByTestId("root").innerHTML);
     expect(1).toBe(1);
   });
