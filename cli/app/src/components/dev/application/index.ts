@@ -91,6 +91,7 @@ export class AppBuilder {
   }
 
   private async done(state: State) {
+    // TODO create normal terminal output message
     if (state.appClient.compiler.stats && !state.appClient.compiler.stats.hasErrors()) {
       this.server.public(constants.appOutput.client);
       this.server._registerManifest(constants.appOutput.clientManifest);
@@ -119,7 +120,7 @@ export class AppBuilder {
     console.log('state:');
     Object.keys(state).forEach((key: string) => {
       const item = state[key as keyof Builders];
-      console.log(` - ${key}: `, item.status);
+      console.log(` - ${key}: `, item.compiler.stats?.hasErrors());
     });
 
     console.log('');

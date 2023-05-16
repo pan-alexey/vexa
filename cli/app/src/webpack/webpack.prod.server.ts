@@ -67,6 +67,20 @@ export default (props: ConfigProps): Configuration => {
             presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'],
           },
         },
+        {
+          test: /\.css$/,
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1,
+                modules: {
+                  localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                },
+              },
+            },
+          ],
+        },
       ],
     },
     plugins: [
