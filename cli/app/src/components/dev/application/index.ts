@@ -125,7 +125,7 @@ export class AppBuilder {
 
     console.log('');
     console.log(`Server run in http://127.0.0.1:${this.server.getPort()}`);
-    console.log(`Local widget in http://127.0.0.1:${this.server.getPort()}/_widget_`);
+    console.log(`Local widget in http://127.0.0.1:${this.server.getPort()}/_widget_/widget.tgz`);
   }
 
   public async run() {

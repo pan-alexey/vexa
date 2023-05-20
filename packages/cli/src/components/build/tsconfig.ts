@@ -8,6 +8,7 @@ export default {
     esModuleInterop: true,
     strict: true,
     removeComments: true,
+    // skipLibCheck: true,
     moduleResolution: 'node',
   },
 };

@@ -2,7 +2,7 @@ import * as Http from 'http';
 import * as Https from 'https';
 import * as Url from 'url';
 import * as tar from 'tar';
-import mkdirp from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 
 // Manual testing
 
@@ -36,7 +36,7 @@ export const download = async (url: string, output: string) => new Promise((reso
   });
 });
 
-export const donwloadModule = async (url: string, output: string) => {
+export const downloadModule = async (url: string, output: string) => {
   await mkdirp(output);
   await download(url, output);
 }

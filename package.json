@@ -19,6 +19,7 @@
       "core/**",
       "cli/**",
       "packages/**",
+      "platform/**",
       "widgets/**"
     ]
   },
@@ -32,16 +33,16 @@
     "🔥": "----------------------------------------",
     "lerna:bootstrap": "lerna bootstrap",
     "📦": "----------------------------------------",
-    "lerna:build": "yarn run lerna:build-cli && yarn run lerna:build-package",
+    "lerna:build": "yarn run lerna:build-tools && yarn run lerna:build-cli && yarn run lerna:build-package",
     "lerna:build-tools": "lerna run build --parallel --scope @vexa/tools-*",
-    "lerna:build-cli": "lerna run build --parallel --scope @vexa/cli-*",
+    "lerna:build-cli": "lerna run build --scope=@vexa/cli-config && lerna run build --scope=@vexa/cli-app",
     "lerna:build-package": "lerna run build --scope @vexa/cli",
     "🧹": "----------------------------------------",
     "clear": "yarn run clear:dist && yarn run clear:yarn.lock && yarn run clear:coverage && yarn run clear:node_modules",
-    "clear:node_modules": "rimraf ./**/node_modules",
-    "clear:yarn.lock": "rimraf ./yarn.lock",
-    "clear:dist": "rimraf ./**/dist",
-    "clear:coverage": "rimraf ./**/coverage"
+    "clear:node_modules": "rimraf --glob ./**/node_modules",
+    "clear:yarn.lock": "rimraf --glob ./yarn.lock",
+    "clear:dist": "rimraf --glob ./**/dist",
+    "clear:coverage": "rimraf --glob ./**/coverage"
   },
   "repository": {
     "type": "git",

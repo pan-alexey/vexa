@@ -2,8 +2,9 @@ import webpack from 'webpack';
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
 const { ModuleFederationPlugin } = webpack.container;
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const shared = require('@vexa/core-app/webpack/shared.js')
+const shared = require('@vexa/core-app/shared/webpack.shared.js');
 
 const appName = 'application'; // Application is singleton
 

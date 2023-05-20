@@ -4,7 +4,7 @@ import webpack from 'webpack';
 const { ModuleFederationPlugin } = webpack.container;
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const shared = require('@vexa/core-app/webpack/shared.js');
+const shared = require('@vexa/core-app/shared/webpack.shared.js');
 
 export interface ConfigProps {
   outputPath: string;
