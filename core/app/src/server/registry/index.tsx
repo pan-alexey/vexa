@@ -56,7 +56,7 @@ export class WidgetRegistry {
     const manifestPath = path.resolve(widgetPath, './manifest.json');
     const serverPath = path.resolve(widgetPath, './server/module.js');
 
-    const widgetManifest = await fs.readJson('./package.json');
+    const widgetManifest = await fs.readJson(manifestPath);
     const WidgetComponent = await requireWidget(serverPath);
     // console.log('widgetManifest', widgetManifest);
 
@@ -65,12 +65,15 @@ export class WidgetRegistry {
     const widgetHmtl = await renderComponent(<WidgetComponent />);
 
     console.log('widgetHmtl', widgetHmtl);
+
+    // Т/к на клиенте чанки подключаются с помощью webpack, от нас требуется только
+    // добавить все css файлы для модуля
     return {
       name: widget.name,
       component: () => <div></div>,
       assets: {
-        js: [''],
-        css: [],
+        js: [''], // Object
+        css: [], // Object
       }
     };
   }

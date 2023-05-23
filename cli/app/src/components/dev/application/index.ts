@@ -67,7 +67,7 @@ export class AppBuilder {
         ctx.start();
         break;
       case 'progress':
-        ctx.progress(state);
+        // ctx.progress(state);
         break;
       case 'done':
         ctx.done(state);
@@ -103,11 +103,6 @@ export class AppBuilder {
       await this.server._regiseterSSR(path.resolve(constants.appOutput.server, 'index.js'));
     }
 
-    if (!state.widgetClient.compiler.stats?.hasErrors()) {
-      console.log('update server');
-      await this.server._regiseterSSR(path.resolve(constants.appOutput.server, 'index.js'));
-    }
-
     await fs.emptyDir(this.config.output);
     await fs.copy(constants.widgetTempPath, this.config.output, { overwrite: true });
     await compress(constants.widgetTempPath, path.resolve(this.config.output, 'widget.tgz'));
@@ -115,7 +110,7 @@ export class AppBuilder {
     this.server.public(this.config.output, '/_widget_');
 
     this.server.ready(true);
-    terminal.clear();
+    // terminal.clear();
 
     console.log('state:');
     Object.keys(state).forEach((key: string) => {

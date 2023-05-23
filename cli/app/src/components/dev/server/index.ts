@@ -1,4 +1,5 @@
 import * as http from 'http';
+import path from 'path';
 import { AddressInfo } from 'net';
 import webpack from 'webpack';
 import express, { Express, Request, Response, NextFunction } from 'express';
@@ -85,8 +86,15 @@ export class DevServer {
 
   public async _regiseterSSR(modulePath: string) {
     try {
-      // clear require cache
-      delete require.cache[require.resolve(modulePath)];
+      // clear require cache for server application
+      // delete require.cache[require.resolve(modulePath)];
+      const dirname = path.dirname(modulePath);
+      Object.keys(require.cache).forEach((element) => {
+        if (element.includes(dirname)) {
+          delete require.cache[require.resolve(element)];
+        }
+      });
+
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       this.ssr = require(modulePath).render as () => Promise<string>;
     } catch (error) {}

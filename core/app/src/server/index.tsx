@@ -14,6 +14,8 @@ export class Render {
     })
   }
 
+  public async prepareWidgets() {}
+
   public getRegistryInstance(): WidgetRegistry {
     return this.widgetRegistry;
   }

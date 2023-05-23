@@ -19,22 +19,22 @@ export default (): Configuration => {
       path: path.resolve('./dist/server'),
       filename: 'index.js',
     },
-    // externals: [
-    //   // for monorepo
-    //   function ({ context, request }, callback) {
-    //     // check if local file import
-    //     if (request && context === process.cwd()) {
-    //       const symbol = request[0];
-    //       if (symbol === '/' || symbol === '.') {
-    //         return callback();
-    //       }
-    //     }
-    //     if (isPackage(request)) {
-    //       return callback(undefined, 'commonjs ' + request);
-    //     }
-    //     return callback();
-    //   },
-    // ],
+    externals: [
+      // for monorepo
+      function ({ context, request }, callback) {
+        // check if local file import
+        if (request && context === process.cwd()) {
+          const symbol = request[0];
+          if (symbol === '/' || symbol === '.') {
+            return callback();
+          }
+        }
+        if (isPackage(request)) {
+          return callback(undefined, 'commonjs ' + request);
+        }
+        return callback();
+      },
+    ],
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.css'],
       alias: {

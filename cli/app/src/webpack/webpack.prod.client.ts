@@ -2,8 +2,9 @@ import { Configuration } from 'webpack';
 import * as path from 'path';
 import webpack from 'webpack';
 const { ModuleFederationPlugin } = webpack.container;
-import { AssetsManifestPlugin } from './plugins/assetsManifestPlugin';
+import { ManifestAssetsPlugin } from './plugins/manifestPlugin';
 
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const shared = require('@vexa/core-app/shared/webpack.shared.js');
 
@@ -17,7 +18,7 @@ export interface ConfigProps {
 export default (props: ConfigProps): Configuration => {
   const config: Configuration = {
     target: 'web',
-    mode: 'development',
+    mode: 'production',
     devtool: 'source-map',
     entry: {
       index: props.entry,
@@ -73,11 +74,14 @@ export default (props: ConfigProps): Configuration => {
           test: /\.css$/,
           use: [
             {
+              loader: MiniCssExtractPlugin.loader,
+            },
+            {
               loader: 'css-loader',
               options: {
                 importLoaders: 1,
                 modules: {
-                  localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                  localIdentName: '[name][hash:base64:8]',
                 },
               },
             },
@@ -86,6 +90,15 @@ export default (props: ConfigProps): Configuration => {
       ],
     },
     plugins: [
+      new MiniCssExtractPlugin({
+        linkType: 'text/css',
+        // insert: function (linkTag) {
+        //   const reference = document.querySelector("#some-element");
+        //   if (reference) {
+        //     reference.parentNode.insertBefore(linkTag, reference);
+        //   }
+        // },
+      }),
       new ModuleFederationPlugin({
         name: props.widgetName,
         library: { type: 'window', name: ['widgets', props.widgetName] },
@@ -93,19 +106,7 @@ export default (props: ConfigProps): Configuration => {
         exposes: { widget: ['./src/index'] },
         shared: shared,
       }),
-      new AssetsManifestPlugin({
-        statsOptions: {
-          outputPath: false,
-          cached: false,
-          cachedAssets: false,
-          chunks: false,
-          chunkModules: false,
-          chunkOrigins: false,
-          modules: false,
-          nestedModules: false,
-          reasons: false,
-          relatedAssets: false,
-        },
+      new ManifestAssetsPlugin({
         output: path.resolve(props.outputPath, 'manifest.json'),
       }),
     ],

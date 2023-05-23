@@ -5,7 +5,7 @@ const name = 'lazy';
 const LazyComponent = React.lazy(() => import('./components/' + name));
 
 const Widget: React.FC = () => {
-  return <div className={styles.root}>
+  return <div test={1} className={styles.root}>
     <div>Name: widget</div>
     <div data-name="React lazy:">
         <React.Suspense>
