@@ -5,7 +5,7 @@ export interface Config {
         httpPort: number;
         getState: (props: {
             url: string;
-        }) => Promise<null>;
+        }) => Promise<unknown>;
     };
 }
 export type CliConfigCallback = () => Promise<Config>;

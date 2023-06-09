@@ -1,17 +1,65 @@
 const path = require('path');
 const vexa = require('../dist/server/index');
 
-const render = new vexa.Render({
-  registryCachePath: path.resolve(process.cwd(), './node_modules/.cache'),
+const http = require("http");
+
+const host = 'localhost';
+const port = 8000;
+
+const application = new vexa.Application({
+  resolvePublic: (name, asset) => {
+    return `http://127.0.0.1:8000/assets/${name}/${asset}`;
+  }
+  // registryCachePath: path.resolve(process.cwd(), './node_modules/.cache'),
 });
 
-const registry = render.getRegistryInstance();
+console.log(application);
 
+// const registry = application.getWidgetRegistry();
 
-(async () => {
-  const res = await registry.loadWidget({
-    name: 'test',
-    remotePath: 'http://127.0.0.1:8888/_widget_/widget.tgz' // 'http://127.0.0.1:8080/_widget_/widget.tgz'
-  });
-})()
-console.log(registry);
+// (async () => {
+//   const requestListener = function (req, res) {
+//     res.write(`<!DOCTYPE html>`);
+
+//     res.write(`
+//       <html lang="en">
+//       <head>
+//         <meta charset="UTF-8" />
+//         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+//         <title>MF</title>
+//     `);
+
+//     registry.prepareWidget({
+//       name: 'widget.cms.navbar@1-dev',
+//       remotePath: 'http://127.0.0.1:8888/_widget_/widget.tgz'
+//     })
+//     .then(() => {
+//       const styles = application.renderStyles(['widget.cms.navbar@1-dev']);
+//       Object.keys(styles).forEach((key) => {
+//         res.write(`<style data-url="${key}">${styles[key]}</style>`);
+//       })
+//     })
+//     .then(() => {
+//       res.write(`</head>`);
+//     })
+//     .then(() => {
+//       return new Promise((res) => setTimeout(res, 1_000))
+//     }).
+//     then(() => {
+//       const widget = registry.getWidget('widget.cms.navbar@1-dev');
+//       if (widget) {
+//         application.renderWidget(widget).then((html) => {
+//           res.write(html);
+//           res.end(`</html>`);
+//         });
+//       } else {
+//         res.end(`</html>`);
+//       }
+//     })
+//   };
+
+//   const server = http.createServer(requestListener);
+//   server.listen(port, host, () => {
+//       console.log(`Server is running on http://${host}:${port}`);
+//   });
+// })();

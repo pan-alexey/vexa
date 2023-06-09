@@ -7,14 +7,5 @@ export interface WidgetMeta {
   owner: string;
   name: string;
   version: string;
-}
-
-export interface Widget {
-  name: WidgetName;
-  slots?: Record<string, Widget[]>;
-  isDev?: boolean;
-}
-
-export interface RemoteWidgets {
-  layout: Widget[];
+  kind: 'dev' | 'debug' | 'common'
 }

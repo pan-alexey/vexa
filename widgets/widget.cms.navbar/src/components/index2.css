@@ -1,4 +1,10 @@
 .root {
   display: flex;
-  background: purple;
+  background: yellow;
+  flex-direction: column;
+}
+
+.lazy {
+  display: flex;
+  gap:4px;
 }

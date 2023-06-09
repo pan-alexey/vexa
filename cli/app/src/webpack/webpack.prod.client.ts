@@ -19,7 +19,8 @@ export default (props: ConfigProps): Configuration => {
   const config: Configuration = {
     target: 'web',
     mode: 'production',
-    devtool: 'source-map',
+    devtool: 'hidden-source-map',
+    cache: false,
     entry: {
       index: props.entry,
     },
@@ -79,6 +80,7 @@ export default (props: ConfigProps): Configuration => {
             {
               loader: 'css-loader',
               options: {
+                sourceMap: false,
                 importLoaders: 1,
                 modules: {
                   localIdentName: '[name][hash:base64:8]',

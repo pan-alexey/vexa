@@ -11,6 +11,7 @@ const appName = 'application'; // Application is singleton
 export interface ConfigProps {
   outputPath: string;
   widgetEntry: string;
+  widgetName: string;
   app: string;
 }
 
@@ -20,6 +21,9 @@ export default (props: ConfigProps): WebpackConfiguration => {
     target: 'node',
     mode: 'development',
     plugins: [
+      new webpack.DefinePlugin({
+        __name__: JSON.stringify(props.widgetName),
+      }),
       new ModuleFederationPlugin({
         library: { type: 'commonjs-module' },
         name: appName,

@@ -1,20 +1,21 @@
 import { Configuration } from 'webpack';
 import * as path from 'path';
-import { isPackage } from './utils/package';
 import webpack from 'webpack';
+import packageJSON from '../package.json'
+import { isPackage } from './utils/package';
 import shared from '../shared/webpack.shared.js';
 const { ModuleFederationPlugin } = webpack.container;
 
 export default (): Configuration => {
   const config: Configuration = {
     entry: {
-      index: path.resolve(process.cwd(), './src/server/index.tsx')
+      index: path.resolve(process.cwd(), './module/server/index.tsx')
     },
     mode: 'production',
     devtool: 'source-map',
     target: 'node',
     output: {
-      uniqueName: 'host', // in package
+      uniqueName: packageJSON.name, // in package
       libraryTarget: 'umd',
       path: path.resolve('./dist/server'),
       filename: 'index.js',
@@ -58,10 +59,13 @@ export default (): Configuration => {
     },
     plugins: [
       new ModuleFederationPlugin({
-        name: 'host',
+        name: packageJSON.name,
         library: { type: 'commonjs-module' },
         shared,
       }),
+      new webpack.DefinePlugin({
+        __PACKAGE_NAME__: JSON.stringify(packageJSON.name),
+      })
     ],
   };
 

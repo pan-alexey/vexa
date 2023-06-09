@@ -16,8 +16,9 @@ export interface ConfigProps {
 export default (props: ConfigProps): Configuration => {
   const config: Configuration = {
     target: 'node',
-    mode: 'development',
-    devtool: 'source-map',
+    cache: false,
+    mode: 'production',
+    devtool: 'hidden-source-map',
     entry: {
       index: props.entry,
     },

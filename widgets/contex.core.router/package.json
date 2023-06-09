@@ -1,5 +1,5 @@
 {
-  "name": "@vexa/widgets-widget.cms.navbar",
+  "name": "@vexa/widgets-contex.core.router",
   "version": "1.0.0-dev",
   "private": true,
   "scripts": {

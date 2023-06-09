@@ -12,6 +12,7 @@ const appName = 'application'; // Application is singleton
 export interface ConfigProps {
   outputPath: string;
   widgetEntry: string;
+  widgetName: string;
   app: string;
   manifestJson: string;
 }
@@ -22,6 +23,9 @@ export default (props: ConfigProps): WebpackConfiguration => {
     devtool: 'source-map',
     mode: 'development',
     plugins: [
+      new webpack.DefinePlugin({
+        __name__: JSON.stringify(props.widgetName),
+      }),
       new AssetsManifestPlugin({
         statsOptions: {
           outputPath: false,

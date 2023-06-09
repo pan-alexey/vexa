@@ -3,7 +3,7 @@ export interface Config {
   output: string; // absolute path for build widget
   debug: {
     httpPort: number;
-    getState: (props: { url: string }) => Promise<null>;
+    getState: (props: { url: string }) => Promise<unknown>;
     // remoteBackend?: (props: { widgetName: string }) => Promise<null>;
   };
 }

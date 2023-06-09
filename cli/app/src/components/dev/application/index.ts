@@ -25,14 +25,20 @@ type State = {
 export class AppBuilder {
   private config: Config;
   private builder: Builder;
-  private server = new DevServer();
+  private server: DevServer;
 
   constructor(config: Config) {
     this.config = config;
+    this.server = new DevServer(config);
+
+    // static middleware
+    this.server.public(constants.appOutput.client, '/client');
+    this.server.public(this.config.output, '/_widget_');
+    this.server.registerStaticDev();
 
     // register dev
-    const appClientBuilder = builders.makeAppClient();
-    const appServerBuilder = builders.makeAppServer();
+    const appClientBuilder = builders.makeAppClient(this.config.name);
+    const appServerBuilder = builders.makeAppServer(this.config.name);
 
     const widgetBuilder = builders.makeWidgetWatch(this.config.name);
 
@@ -67,7 +73,7 @@ export class AppBuilder {
         ctx.start();
         break;
       case 'progress':
-        // ctx.progress(state);
+        ctx.progress(state);
         break;
       case 'done':
         ctx.done(state);
@@ -93,7 +99,6 @@ export class AppBuilder {
   private async done(state: State) {
     // TODO create normal terminal output message
     if (state.appClient.compiler.stats && !state.appClient.compiler.stats.hasErrors()) {
-      this.server.public(constants.appOutput.client);
       this.server._registerManifest(constants.appOutput.clientManifest);
       this.server.sendHmr(state.appClient.compiler.stats);
     }
@@ -107,10 +112,9 @@ export class AppBuilder {
     await fs.copy(constants.widgetTempPath, this.config.output, { overwrite: true });
     await compress(constants.widgetTempPath, path.resolve(this.config.output, 'widget.tgz'));
     await fs.emptyDir(constants.widgetTempPath);
-    this.server.public(this.config.output, '/_widget_');
 
     this.server.ready(true);
-    // terminal.clear();
+    terminal.clear();
 
     console.log('state:');
     Object.keys(state).forEach((key: string) => {
@@ -124,11 +128,7 @@ export class AppBuilder {
   }
 
   public async run() {
-    // mkdir shared
-    const port = this.config.debug.httpPort;
-
-    // public
-    await this.server.listen(port);
+    await this.server.listen();
     await this.builder.run();
   }
 }

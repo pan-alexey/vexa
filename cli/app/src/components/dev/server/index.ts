@@ -2,6 +2,7 @@ import * as http from 'http';
 import path from 'path';
 import { AddressInfo } from 'net';
 import webpack from 'webpack';
+import type { Config } from '@vexa/cli-config';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { createHotServer } from 'webpack-hmr-server';
 import fs from 'fs-extra';
@@ -11,7 +12,9 @@ interface Manifest {
     initialJS: string[];
     allJS: string[];
   };
-};
+}
+
+type SsrApp = any;
 
 export class DevServer {
   private expressApp: Express = express();
@@ -19,19 +22,19 @@ export class DevServer {
   private hotServer = createHotServer(this.server);
   private isReady = false;
   private port = 0;
-
+  private appConfig: Config;
   private manifest: Manifest = {
     js: {
       initialJS: [],
       allJS: [],
     },
   };
+  private ssrApp: null | SsrApp = null;
 
-  private ssr: () => Promise<string> = async () => '';
-
-  constructor() {
+  constructor(appConfig: Config) {
+    this.appConfig = appConfig;
     this.useReadyMiddleware();
-    this.registerStaticDev();
+    // this.registerStaticDev();
   }
 
   private useReadyMiddleware(): void {
@@ -52,29 +55,38 @@ export class DevServer {
     });
   }
 
-  private registerStaticDev() {
-    this.expressApp.get('/', async (req, res) => {
+  public registerStaticDev() {
+    this.expressApp.get('*', async (req, res) => {
+      if (this.ssrApp === null) {
+        res.send('not ready');
+      }
+
+      const state = await this.appConfig.debug.getState({
+        url: req.path,
+      });
+
+      const layout = await this.ssrApp.layout((state as any).layout);
+
       const initialJS = this.manifest.js.initialJS;
-      const headScript = initialJS
+      const headWidgetScript = initialJS
         .map((asset) => {
-          return ` <script defer src="/${asset}"></script>`;
+          return ` <script defer src="/client/${asset}"></script>`;
         })
         .join('');
 
-      const html = await this.ssr();
-
       res.send(`<!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>MF</title>
-          ${headScript}
-        </head>
-        <body>
-          <div id="root">${html}</div>
-        </body>
-      </html>`);
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>MF</title>
+            <script>window.__state__ = ${JSON.stringify(state)};</script> 
+            ${headWidgetScript}
+          </head>
+          <body>
+            <div id="root">${layout}</div>
+          </body>
+        </html>`);
     });
   }
 
@@ -96,7 +108,9 @@ export class DevServer {
       });
 
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      this.ssr = require(modulePath).render as () => Promise<string>;
+      const application = require(modulePath).getApplication as () => unknown;
+
+      this.ssrApp = application();
     } catch (error) {}
   }
 
@@ -122,8 +136,9 @@ export class DevServer {
     return this.port;
   }
 
-  public async listen(port: number) {
-    // port can be random if use port = 0
+  public async listen() {
+    const port = this.appConfig.debug.httpPort;
+
     this.port = await new Promise((resolve, reject) => {
       let startFinished = false;
       this.server.listen(port, () => {

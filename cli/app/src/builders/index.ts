@@ -7,7 +7,7 @@ import webpackDevServer from '../webpack/webpack.dev.server';
 import webpackProdClient from '../webpack/webpack.prod.client';
 import webpackProdServer from '../webpack/webpack.prod.server';
 
-export const makeAppClient = (): WatchBuilder | null => {
+export const makeAppClient = (widgetName: string): WatchBuilder | null => {
   const { appInput, appOutput, widgetSource } = constants;
 
   if (!appInput.client) {
@@ -19,6 +19,7 @@ export const makeAppClient = (): WatchBuilder | null => {
     outputPath: appOutput.client,
     widgetEntry: widgetSource,
     manifestJson: appOutput.clientManifest,
+    widgetName,
   });
 
   const compiler = webpack(webpackConfig);
@@ -33,7 +34,7 @@ export const makeAppClient = (): WatchBuilder | null => {
   });
 };
 
-export const makeAppServer = (): WatchBuilder | null => {
+export const makeAppServer = (widgetName: string): WatchBuilder | null => {
   const { appInput, appOutput, widgetSource } = constants;
 
   if (!appInput.server) {
@@ -44,6 +45,7 @@ export const makeAppServer = (): WatchBuilder | null => {
     app: appInput.server,
     outputPath: appOutput.server,
     widgetEntry: widgetSource,
+    widgetName,
   });
 
   const compiler = webpack(webpackConfig);

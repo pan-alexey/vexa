@@ -11,8 +11,7 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "yarn build:server && node bootstrap.js",
-    "build:server": "NODE_ENV=production webpack build --config webpack/webpack.server.ts",
+    "dev": "ts-node src/index.ts",
     "clear": "rimraf build",
     "test": "jest --config jest.config.ts",
     "test:coverage": "jest --config jest.config.ts  --coverage",
@@ -29,7 +28,6 @@
     "ts-jest": "^28.0.7",
     "ts-node": "^10.9.1",
     "jest": "^28.1.3",
-    "webpack": "^5.79.0",
     "typescript": "^5.0.3",
     "@babel/core": "^7.18.13",
     "eslint": "^8.0.0",
@@ -37,12 +35,7 @@
     "@babel/plugin-transform-runtime": "^7.18.10",
     "@babel/preset-env": "^7.18.10",
     "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "7.18.6",
-    "mini-css-extract-plugin": "^2.7.5",
-    "style-loader": "^3.3.1",
-    "css-loader": "^6.7.1",
-    "babel-loader":"^8.2.5",
-    "webpack-cli":"^5.1.1"
+    "@babel/preset-typescript": "7.18.6"
   },
   "dependencies": {
     "@vexa/core-app": "^1.0.0",

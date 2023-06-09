@@ -4,7 +4,7 @@ import type { Config } from '@vexa/cli';
 
 export default config(async () => {
   const config: Config = {
-    name: 'widget.cms.navbar@1-dev',
+    name: 'contex.core.router@1-dev',
     output: path.resolve(process.cwd(), './dist'),
     debug: {
       httpPort: 8888,
@@ -13,13 +13,10 @@ export default config(async () => {
         return {
           layout: [
             {
-              widgetName: 'widget.cms.navbar@1-dev',
+              widgetName: 'widget.cms.navbar',
             },
             {
-              widgetName: 'context.core.router@1-dev',
-            },
-            {
-              widgetName: 'widget.cms.navbar@1-dev',
+              widgetName: 'contex.core.router@1-dev',
             }
           ]
         };
