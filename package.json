@@ -7,10 +7,12 @@
     "nohoist": [
       "**/ts-node",
       "**/webpack",
+      "**/react",
       "**/react-dom",
       "**/@vexa/eslint-*",
       "**/@vexa/prettier-*",
       "**/@vexa/cli-*",
+      "**/@vexa/core-app",
       "**/@vexa/cli"
     ],
     "packages": [
@@ -20,7 +22,8 @@
       "cli/**",
       "packages/**",
       "platform/**",
-      "widgets/**"
+      "widgets/**",
+      "widgets_test/**"
     ]
   },
   "dependencies": {

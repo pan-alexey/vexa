@@ -1,40 +1,42 @@
 import { Configuration } from 'webpack';
 import * as path from 'path';
+// import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+// import { isPackage } from './webpack/package';
+
+// webpack configs
+
 import webpack from 'webpack';
-import packageJSON from '../package.json'
-import { isPackage } from './utils/package';
-import shared from '../shared/webpack.shared.js';
 const { ModuleFederationPlugin } = webpack.container;
 
 export default (): Configuration => {
   const config: Configuration = {
     entry: {
-      index: path.resolve(process.cwd(), './module/server/index.tsx')
+      index: path.resolve('./src/server/index.tsx'),
     },
     mode: 'production',
     devtool: 'source-map',
     target: 'node',
     output: {
-      uniqueName: packageJSON.name, // in package
+      uniqueName: 'host', // in package
       libraryTarget: 'umd',
       path: path.resolve('./dist/server'),
       filename: 'index.js',
     },
     externals: [
-      // for monorepo
-      function ({ context, request }, callback) {
-        // check if local file import
-        if (request && context === process.cwd()) {
-          const symbol = request[0];
-          if (symbol === '/' || symbol === '.') {
-            return callback();
-          }
-        }
-        if (isPackage(request)) {
-          return callback(undefined, 'commonjs ' + request);
-        }
-        return callback();
-      },
+      // // hack for monorepo
+      // function ({ context, request }, callback) {
+      //   // check if local file import
+      //   if (request && context === process.cwd()) {
+      //     const symbol = request[0];
+      //     if (symbol === '/' || symbol === '.') {
+      //       return callback();
+      //     }
+      //   }
+      //   if (isPackage(request, process.cwd())) {
+      //     return callback(undefined, 'commonjs ' + request);
+      //   }
+      //   return callback();
+      // },
     ],
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.css'],
@@ -58,14 +60,20 @@ export default (): Configuration => {
       ],
     },
     plugins: [
+      // @ts-ignore
+      // new CleanWebpackPlugin(),
       new ModuleFederationPlugin({
-        name: packageJSON.name,
+        name: 'host',
         library: { type: 'commonjs-module' },
-        shared,
+        shared: {
+          react: { singleton: true, eager: true }, // to external
+          'react-dom': { singleton: true, eager: true }, // to external
+          // moment: { singleton: true },
+        },
       }),
-      new webpack.DefinePlugin({
-        __PACKAGE_NAME__: JSON.stringify(packageJSON.name),
-      })
+      // new ForkTsCheckerWebpackPlugin({
+      //   async: true,
+      // }),
     ],
   };
 

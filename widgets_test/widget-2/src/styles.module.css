@@ -1,0 +1,8 @@
+.root {
+  display: block;
+  border: 1px solid #ccc;
+}
+
+.children {
+  padding: 10px;
+}

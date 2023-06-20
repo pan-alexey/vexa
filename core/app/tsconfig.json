@@ -1,21 +1,14 @@
 {
-  "ts-node": {
-    "compilerOptions": {
-      "module": "commonjs"
-    }
-  },
   "compilerOptions": {
     "jsx": "react",
+    "outDir": "./dist/",
     "module": "commonjs",
-    "resolveJsonModule": true,
     "declaration": true,
     "noImplicitAny": true,
-    "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "target": "ESNext",
     "strict": true,
-    "skipLibCheck": true,
     "removeComments": true,
     "moduleResolution": "node",
     "types": [
@@ -29,5 +22,6 @@
     "node_modules",
     "dist",
     "**/__test__/*"
-  ]
+  ],
+  "include": ["src/index.ts"]
 }

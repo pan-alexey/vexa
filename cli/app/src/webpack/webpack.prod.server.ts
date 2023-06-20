@@ -1,50 +1,49 @@
 import { Configuration } from 'webpack';
+import { widgetSource, widgetBootstrap, widgetBuildServer } from '../shared/constants';
+import type { Config } from '@vexa/cli-config';
 import * as path from 'path';
 import webpack from 'webpack';
 const { ModuleFederationPlugin } = webpack.container;
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const shared = require('@vexa/core-app/shared/webpack.shared.js');
+export default (config: Config): Configuration => {
+  const widgetName = config.name;
+  // const normalize name
+  const normalizeName = 'widget'; //config.widgetName;
 
-export interface ConfigProps {
-  outputPath: string;
-  widgetName: string;
-  entry: string;
-  widgetEntry: string;
-}
-
-export default (props: ConfigProps): Configuration => {
-  const config: Configuration = {
+  const webpackConfig: Configuration = {
     target: 'node',
-    cache: false,
-    mode: 'production',
-    devtool: 'hidden-source-map',
+    mode: 'development',
+    devtool: 'source-map',
     entry: {
-      index: props.entry,
+      index: widgetBootstrap,
     },
     output: {
       publicPath: 'auto',
-      libraryTarget: 'commonjs-module',
-      path: path.resolve(props.outputPath, './server'),
+      libraryTarget: 'umd',
       filename: `[name].js`,
       chunkFilename: './chunks/[name]-[contenthash].js',
-      clean: true,
+      path: widgetBuildServer,
     },
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.css'],
       alias: {
-        '~widget$': props.widgetEntry, // используем alias для подключения виджета ???
+        '~': path.resolve('src'),
+        '~widget$': widgetSource,
       },
     },
     optimization: {
       runtimeChunk: false,
       splitChunks: {
-        chunks: 'all',
+        chunks: 'async',
         maxInitialRequests: Infinity,
         minSize: 0,
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
+            // idHint: 'vendors',
+            name: 'vendors',
+            chunks: 'async',
+            priority: -10,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             name(module) {
@@ -69,15 +68,15 @@ export default (props: ConfigProps): Configuration => {
           },
         },
         {
-          test: /\.css$/,
+          test: /\.css$/i,
           use: [
-            'style-loader',
             {
               loader: 'css-loader',
               options: {
-                importLoaders: 1,
                 modules: {
-                  localIdentName: '[name][hash:base64:8]',
+                  exportOnlyLocals: true,
+                  auto: true,
+                  localIdentName: `${normalizeName}_[contenthash]`,
                 },
               },
             },
@@ -87,14 +86,18 @@ export default (props: ConfigProps): Configuration => {
     },
     plugins: [
       new ModuleFederationPlugin({
-        name: props.widgetName,
+        name: widgetName,
         library: { type: 'commonjs-module' },
         filename: 'module.js',
         exposes: { widget: ['./src/index'] },
-        shared: shared,
+        shared: {
+          react: { singleton: true },
+          'react-dom': { singleton: true },
+          moment: { singleton: true },
+        },
       }),
     ],
   };
 
-  return config;
+  return webpackConfig;
 };

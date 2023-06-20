@@ -16,7 +16,7 @@
   },
   "scripts": {
     "clear": "rimraf build",
-    "dev": "yarn build:server && node ./test/index.js",
+    "dev": "yarn build:server && node ./__test__/index.js",
     "build": "yarn build:server && yarn build:types && yarn build:client",
     "build:server": "NODE_ENV=production webpack build --config webpack/webpack.server.ts",
     "build:types": "tsc --project tsconfig-server.json --declaration --emitDeclarationOnly",
@@ -54,7 +54,9 @@
     "webpack-cli":"^5.1.1",
     "@babel/core": "^7.18.13",
     "webpack": "^5.79.0",
-    "eslint": "^8.0.0"
+    "eslint": "^8.0.0",
+    "pretty":"^2.0.0",
+    "@types/pretty": "^2.0.1"
   },
   "dependencies": {
     "react": "18.2.0",

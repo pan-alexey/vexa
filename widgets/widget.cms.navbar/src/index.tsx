@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import styles from './styles.css';
+// import styles from './styles.css';
 
 const name = 'lazy';
 const LazyComponent = React.lazy(() => import('./components/' + name));
 
-const Widget: React.FC = () => {
+interface WidgetProps {
+  slots: Record<string, unknown>;
+}
+
+const Widget: React.FC<WidgetProps> = ({ slots = {} }) => {
   const [count, setCount] = useState(1);
 
   const handleClick = () => {
@@ -15,9 +19,11 @@ const Widget: React.FC = () => {
     setCount(10);
   }, []);
 
-  return <div test={1} className={styles.root}>
-    <div>Name: widget</div>
-    <div onClick={handleClick}>count: {count}</div>
+  return <div className={styles.root}>
+    <div>Name: widget.cms.navbar</div>
+    <div onClick={handleClick}>count: ({count})</div>
+    <div className={styles.slot1}>slots1: </div>
+    <div className={styles.slot1}>slots2:</div>
 
     <div data-name="React lazy:">
         <React.Suspense>

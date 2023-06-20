@@ -2,6 +2,7 @@ export interface Config {
     name: string;
     output: string;
     debug: {
+        remotes: Record<string, string>;
         httpPort: number;
         getState: (props: {
             url: string;

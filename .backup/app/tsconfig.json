@@ -1,0 +1,33 @@
+{
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "declaration": true,
+    "noImplicitAny": true,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "removeComments": true,
+    "moduleResolution": "node",
+    "types": [
+      "node",
+      "jest",
+      "webpack/module"
+    ],
+    "baseUrl": "./src"
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/__test__/*"
+  ]
+}
