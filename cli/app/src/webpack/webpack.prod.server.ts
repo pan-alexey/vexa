@@ -1,6 +1,7 @@
 import { Configuration } from 'webpack';
 import { widgetSource, widgetBootstrap, widgetBuildServer } from '../shared/constants';
 import type { Config } from '@vexa/cli-config';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import * as path from 'path';
 import webpack from 'webpack';
 const { ModuleFederationPlugin } = webpack.container;
@@ -85,6 +86,7 @@ export default (config: Config): Configuration => {
       ],
     },
     plugins: [
+      new CleanWebpackPlugin(),
       new ModuleFederationPlugin({
         name: widgetName,
         library: { type: 'commonjs-module' },

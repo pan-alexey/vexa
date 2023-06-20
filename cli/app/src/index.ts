@@ -1,5 +1,5 @@
 import { Config } from '@vexa/cli-config';
-import devApp from './components/dev';
+import { Application as AppDev } from './apps/dev';
 
 export class App {
   private config: Config;
@@ -10,9 +10,8 @@ export class App {
   public async run(mode: 'build' | 'dev') {
     switch (mode) {
       case 'dev':
-        await devApp(this.config);
+        new AppDev(this.config).run();
         break;
-
       default:
         break;
     }

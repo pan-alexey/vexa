@@ -1,7 +1,7 @@
 import type { Config } from '@vexa/cli-config';
 import webpack from 'webpack';
 import { WatchBuilder, BaseBuilder } from '@vexa/tools-builder';
-import getWebpackConfig from '../webpack/webpack.prod.server';
+import getWebpackConfig from '../../webpack/webpack.prod.server';
 
 export const watchBuilder = (config: Config): WatchBuilder => {
   const compiler = webpack(getWebpackConfig(config));

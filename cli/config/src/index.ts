@@ -1,6 +1,5 @@
 export interface Config {
   name: string; // widget name
-  output: string; // absolute path for build widget
   debug: {
     remotes: Record<string, string>;
     httpPort: number;

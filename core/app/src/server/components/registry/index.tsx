@@ -22,7 +22,7 @@ export class Registry {
 
     const downloadPath1 = path.resolve(outputPath, 'widgetName1');
     const modulePath1 = path.resolve(downloadPath1, './server');
-    await downloadModule('http://127.0.0.1:8081/dist.tgz', downloadPath1);
+    await downloadModule('http://127.0.0.1:8888/_static_/widget.tgz', downloadPath1);
     const Component1 = await loadModule(modulePath1);
 
     // const downloadPath2 = path.resolve(outputPath, 'widgetName2');

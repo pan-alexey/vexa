@@ -14,8 +14,6 @@ interface Manifest {
   };
 }
 
-type SsrApp = any;
-
 export class DevServer {
   private expressApp: Express = express();
   private server = http.createServer(this.expressApp);

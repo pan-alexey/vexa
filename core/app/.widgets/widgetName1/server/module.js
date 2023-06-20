@@ -120,7 +120,7 @@ __webpack_require__.d(exports, {
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
-/******/ 			return "./chunks/" + chunkId + "-" + {"vendor/moment":"2a4874f1147300ad5a35","node_modules_moment_locale_sync_recursive_":"5ebb9563db138ca246d5","vendor/react":"9863964832ed1b6d90bf","src_index_tsx":"c22f5e3f05ec70736c4a","src_components_lazy_tsx":"14d230397aed877e9696"}[chunkId] + ".js";
+/******/ 			return "./chunks/" + chunkId + "-" + {"vendor/moment":"2a4874f1147300ad5a35","node_modules_moment_locale_sync_recursive_":"5ebb9563db138ca246d5","vendor/react":"9863964832ed1b6d90bf","src_index_tsx":"5be8626bb2f73dcf1994","src_components_lazy_tsx":"14d230397aed877e9696"}[chunkId] + ".js";
 /******/ 		};
 /******/ 	})();
 /******/ 	

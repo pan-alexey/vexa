@@ -2,9 +2,7 @@ import * as Http from 'http';
 import * as Https from 'https';
 import * as Url from 'url';
 import * as tar from 'tar';
-import { mkdirp } from 'mkdirp';
-
-// Manual testing
+import fs from 'fs-extra';
 
 const customAgents = {
   http: new Http.Agent({ keepAlive: true }),
@@ -39,6 +37,6 @@ export const download = async (url: string, output: string) => new Promise((reso
 });
 
 export const downloadModule = async (url: string, output: string) => {
-  await mkdirp(output);
+  await fs.emptyDir(output);
   await download(url, output);
 }
