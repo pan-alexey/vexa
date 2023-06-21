@@ -1,4 +1,4 @@
-import { Config } from '@vexa/cli-config';
+import type { Config } from '@vexa/cli-config';
 import { Application as AppDev } from './apps/dev';
 
 export class App {

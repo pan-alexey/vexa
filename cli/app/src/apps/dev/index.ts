@@ -2,25 +2,22 @@ import path from 'path';
 import fs from 'fs-extra';
 import { throttle } from 'lodash';
 import * as constants from '../../shared/constants';
-import { watchBuilder as serverProd } from '../../components/builders/server.prod';
+import { watchBuilder as serverDist } from '../../components/builders/server.dist';
+import { watchBuilder as serverApp } from '../../components/builders/server.app';
 import { WatchBuilder, MultiBuilder, BuilderState } from '@vexa/tools-builder';
 import * as terminal from '../../shared/libs/terminal';
 import { compress } from '../../shared/libs/compress';
-
-import { DevServer } from '../../components/devServer';
-// import { DevServer } from '../server';
-// import * as builders from '../../../builders';
-// import { compress } from '../../../utils/compress';
-// import * as terminal from '../terminal';
-// import * as constants from '../../../builders/constants';
-
+import { getBuildStatus } from '../../shared/helpers/buildStatus';
+import { DevServer, Application as DevServerApp } from '../../components/devServer';
 import type { Config } from '@vexa/cli-config';
+// import type { Application as CoreApp } from '@vexa/core-app/src/server';
 
 type Builders = {
   // appClient: WatchBuilder;
   // appServer: WatchBuilder;
   // widgetClient: WatchBuilder;
-  serverProd: WatchBuilder;
+  serverDist: WatchBuilder;
+  serverApp: WatchBuilder;
 };
 
 type Builder = MultiBuilder<Builders>;
@@ -37,18 +34,18 @@ export class Application {
     this.config = config;
 
     this.builder = new MultiBuilder({
-      serverProd: serverProd(this.config),
+      serverDist: serverDist(this.config),
+      serverApp: serverApp(this.config),
     });
 
     this.server = new DevServer({
-      port: config.debug.httpPort,
+      config: config,
     });
   }
 
   public async run() {
     await this.prepare();
     await this.runServer();
-
     await this.registerBuilder();
     await this.builder.run();
   }
@@ -60,7 +57,7 @@ export class Application {
 
   private async runServer() {
     this.server.public(constants.widgetDist, '/_static_');
-
+    this.server.registerRouter();
     await this.server.listen();
   }
 
@@ -109,16 +106,64 @@ export class Application {
     terminal.clear();
     console.log('done');
 
-    this.server.ready(true);
-    await this.processDone();
+    const statuses = {
+      serverApp: getBuildStatus(state.serverApp),
+      serverDist: getBuildStatus(state.serverDist),
+    };
 
-    console.log('constants.widgetDist', constants.widgetDist);
-    console.log(`Local widget in http://127.0.0.1:${this.server.getPort()}/_static_/widget.tgz`);
+    console.log(`Build application: ${statuses.serverApp}`);
+    console.log(`Build widget: ${statuses.serverDist}`);
+
+    // console.log('state.serverApp.compiler.stats?.hasErrors()', state.serverApp.compiler.stats?.hasErrors());
+    // console.log('state.serverApp.compiler.stats?.hasErrors()', state.serverApp.compiler.err);
+
+    try {
+      if (statuses.serverApp !== 'error' && statuses.serverDist !== 'error') {
+        await this.processDone();
+        await this.registerApp();
+        this.server.ready(true);
+        // console.log('constants.widgetDist', constants.widgetDist);
+        console.log(`Dev server run in http://127.0.0.1:${this.server.getPort()}`);
+        console.log(`Widget allow in http://127.0.0.1:${this.server.getPort()}/_static_/widget.tgz`);
+        return;
+      }
+    } catch (error) {
+      console.log('Error register application');
+    }
+
+    this.server.ready(false);
+  }
+
+  private async registerApp() {
+    try {
+      const app = (await this.requireApp()) as DevServerApp;
+      this.server.injectApp(app);
+    } catch (error) {
+      this.server.injectApp(null);
+    }
   }
 
   private async processDone() {
     await fs.emptyDir(constants.widgetDist);
     await fs.copy(constants.widgetBuild, constants.widgetDist, { overwrite: true });
     await compress(constants.widgetBuild, path.resolve(constants.widgetDist, 'widget.tgz'));
+  }
+
+  public async requireApp() {
+    const appServerDist = constants.widgetAppDistServer;
+    const modulePath = path.resolve(appServerDist, './index.js');
+
+    // clear require cache for server application
+    // delete require.cache[require.resolve(modulePath)];
+    Object.keys(require.cache).forEach((element) => {
+      if (element.includes(appServerDist)) {
+        delete require.cache[require.resolve(element)];
+      }
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const getApplication = require(modulePath).getApplication as (config: Config) => unknown;
+    const application = getApplication(this.config);
+    return application;
   }
 }

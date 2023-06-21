@@ -1,17 +1,32 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import widget from '~widget'; // Подключаем код виджета c использованием alias
-import { Application, Tracker } from '@vexa/core-app/module/server/application';
+import { Application } from '@vexa/core-app/src/server';
+import type { Config } from '@vexa/cli-config';
 
-class DebugTracker extends Tracker {}
-
-export const getApplication = () => {
+export const getApplication = (config: Config) => {
   const application = new Application({
-    resolvePublic: () => '',
-    tracker: new DebugTracker(),
+    remoteUrls: config.debug.remotes,
   });
 
-  application.registerDevWidget(__name__ as string, widget);
+  // @ts-ignore
+  const widgetName = __name__ as string;
+  const meta = application.getWidgetMeta(widgetName);
+
+  if (meta === null) {
+    // error;
+    return application;
+  }
+
+  application.injectWidget({
+    name: widgetName,
+    element: widget,
+    meta,
+    assets: {
+      css: {},
+      js: {},
+    },
+  });
 
   return application;
 };

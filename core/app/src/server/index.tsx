@@ -1,16 +1,40 @@
+import React from 'react';
 import pretty from 'pretty';
-import { Registry } from './components/registry';
+import { Registry, RegistryWidget } from './components/registry';
+import { renderComponent } from './libs/render';
+import { getWidgetMeta } from '../common/widget/getWidgetMeta';
 // import { data } from './data';
 // import { renderApp } from './base';
 
-export class Render {
-  public async render() {
-    const registry = new Registry();
+export type { RegistryWidget };
+export interface ApplicationProps {
+  remoteUrls: Record<string, string>;
+}
 
-    await registry.loadWidget('widget.cms.navbar@1-dev', 'http://127.0.0.1:8888/_static_/widget.tgz');
+export class Application {
+  private registry: Registry;
 
-    // const html = await registry.init();
-    // const appData = await renderApp(data);
-    // console.log(pretty(html));
+  constructor(props: ApplicationProps) {
+    this.registry = new Registry({
+      remoteUrls: props.remoteUrls,
+    });
+  }
+
+  public getWidgetMeta = getWidgetMeta;
+
+  public async renderWidget(widgetName: string): Promise<string> {
+    const widget = await this.registry.getWidget(widgetName);
+
+    if (widget === null) {
+      return 'null';
+    }
+
+    const html = await renderComponent(<widget.element />);
+
+    return pretty(html);
+  }
+
+  public injectWidget(widget: RegistryWidget) {
+    this.registry.injectWidget(widget);
   }
 }

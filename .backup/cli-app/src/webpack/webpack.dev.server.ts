@@ -3,9 +3,6 @@ import type { Configuration as WebpackConfiguration } from 'webpack';
 
 const { ModuleFederationPlugin } = webpack.container;
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const shared = require('@vexa/core-app/shared/webpack.shared.js');
-
 const appName = 'application'; // Application is singleton
 
 export interface ConfigProps {
@@ -27,7 +24,11 @@ export default (props: ConfigProps): WebpackConfiguration => {
       new ModuleFederationPlugin({
         library: { type: 'commonjs-module' },
         name: appName,
-        shared,
+        shared: {
+          react: { singleton: true, eager: true }, // to external
+          'react-dom': { singleton: true, eager: true }, // to external
+          // moment: { singleton: true },
+        },
       }),
     ],
     context: process.cwd(),

@@ -98,6 +98,9 @@ export default (config: Config): Configuration => {
           moment: { singleton: true },
         },
       }),
+      new webpack.DefinePlugin({
+        __name__: JSON.stringify(widgetName),
+      }),
     ],
   };
 

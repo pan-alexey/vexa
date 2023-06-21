@@ -1,7 +1,9 @@
 import * as http from 'http';
 import path from 'path';
 import { AddressInfo } from 'net';
+import type { Config } from '@vexa/cli-config';
 import webpack from 'webpack';
+import { renderHtml } from './render';
 
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { createHotServer } from 'webpack-hmr-server';
@@ -15,19 +17,26 @@ interface Manifest {
 }
 
 export interface DevServerProps {
-  port: number;
+  config: Config;
+}
+
+export interface Application {
+  renderWidget: (widgetName: string) => Promise<string>;
 }
 
 export class DevServer {
+  private application: Application | null = null;
   private expressApp: Express = express();
   private server = http.createServer(this.expressApp);
   private hotServer = createHotServer(this.server);
   private isReady = false;
   private port = 0;
+  private config: Config;
 
   constructor(props: DevServerProps) {
+    this.port = props.config.debug.httpPort;
+    this.config = props.config;
     this.useReadyMiddleware();
-    this.port = props.port;
   }
 
   private useReadyMiddleware(): void {
@@ -48,9 +57,24 @@ export class DevServer {
     });
   }
 
+  public registerRouter() {
+    this.expressApp.get('*', async (req, res) => {
+      if (this.application === null) {
+        return res.end('not ready');
+      }
+
+      const state = await this.config.debug.getState({
+        url: req.url,
+      });
+
+      const html = await renderHtml(this.application, state);
+      // const html = this.application?.renderWidget('widget.cms.navbar@1-dev');
+      return res.end(html);
+    });
+  }
+
   public ready(status: boolean) {
     this.isReady = status;
-    // may be need close active connection
   }
 
   public public(path: string, root?: string) {
@@ -58,7 +82,6 @@ export class DevServer {
       this.expressApp.use(root, express.static(path));
       return;
     }
-
     this.expressApp.use(express.static(path));
   }
 
@@ -68,7 +91,6 @@ export class DevServer {
 
   public async listen() {
     const port = this.port;
-
     this.port = await new Promise((resolve, reject) => {
       let startFinished = false;
       this.server.listen(port, () => {
@@ -85,5 +107,9 @@ export class DevServer {
         }
       });
     });
+  }
+
+  public injectApp(application: Application | null) {
+    this.application = application;
   }
 }

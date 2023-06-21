@@ -6,8 +6,11 @@ export default config(async () => {
   const config: Config = {
     name: 'widget.cms.navbar@1-dev',
     debug: {
-      httpPort: 8888,
-      remotes: {},
+      httpPort: 8889,
+      remotes: {
+        '*': 'http://127.0.0.1:9000/{name}/widget.tgz',
+        // 'widget.cms.navbar@1-dev': 'http://127.0.0.1:8888/_static_/widget.tgz'
+      },
       getState: async (params) => {
         return {
           layout: []
