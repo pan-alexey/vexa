@@ -1,2 +1,3 @@
-Main application
-Build typed only
+CLI приложение
+
+Для dev приложения мы билдим core-app пакет

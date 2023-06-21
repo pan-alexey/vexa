@@ -20,7 +20,7 @@ export default (config: Config): Configuration => {
     },
     output: {
       publicPath: 'auto',
-      libraryTarget: 'umd',
+      libraryTarget: 'commonjs-module',
       filename: `[name].js`,
       chunkFilename: './chunks/[name]-[contenthash].js',
       path: widgetBuildServer,
@@ -44,7 +44,6 @@ export default (config: Config): Configuration => {
             // idHint: 'vendors',
             name: 'vendors',
             chunks: 'async',
-            priority: -10,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             name(module) {
@@ -89,11 +88,11 @@ export default (config: Config): Configuration => {
       new CleanWebpackPlugin(),
       new ModuleFederationPlugin({
         name: widgetName,
-        library: { type: 'commonjs-module' },
+        library: { type: 'umd' },
         filename: 'module.js',
         exposes: { widget: ['./src/index'] },
         shared: {
-          react: { singleton: true },
+          react: { singleton: true }, // eager: true
           'react-dom': { singleton: true },
           moment: { singleton: true },
         },

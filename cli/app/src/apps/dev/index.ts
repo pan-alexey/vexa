@@ -139,6 +139,7 @@ export class Application {
       const app = (await this.requireApp()) as DevServerApp;
       this.server.injectApp(app);
     } catch (error) {
+      console.log('registerApp:error', error);
       this.server.injectApp(null);
     }
   }

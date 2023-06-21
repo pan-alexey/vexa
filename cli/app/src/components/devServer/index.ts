@@ -22,6 +22,7 @@ export interface DevServerProps {
 
 export interface Application {
   renderWidget: (widgetName: string) => Promise<string>;
+  getRegistryInstance: () => unknown;
   clearRegistry: () => Promise<void>;
 }
 
@@ -78,6 +79,7 @@ export class DevServer {
 
       const html = await renderHtml(this.application, state);
       // const html = this.application?.renderWidget('widget.cms.navbar@1-dev');
+
       return res.end(html);
     });
   }
