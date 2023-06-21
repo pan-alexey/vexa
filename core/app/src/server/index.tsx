@@ -22,6 +22,10 @@ export class Application {
 
   public getWidgetMeta = getWidgetMeta;
 
+  public async clearRegistry() {
+    await this.registry.clear();
+  }
+
   public async renderWidget(widgetName: string): Promise<string> {
     const widget = await this.registry.getWidget(widgetName);
 

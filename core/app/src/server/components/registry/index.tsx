@@ -30,6 +30,10 @@ export class Registry {
     this.remoteUrls = props.remoteUrls;
   }
 
+  public async waitFor() {
+    //
+  }
+
   public injectWidget(widget: RegistryWidget) {
     this.widgetMap[widget.name] = widget;
   }
@@ -108,6 +112,29 @@ export class Registry {
         result.push(__non_webpack_require__.resolve(element));
       }
     });
-    return [];
+
+    return result;
+  }
+
+  public async clear() {
+    const requireCache = this.getWidgetRequireCacheList();
+
+    Object.keys(this.widgetMap).forEach((key) => {
+      const widget = this.widgetMap[key];
+      if (!widget.requirePath) {
+        return;
+      }
+
+      const widgetPath = widget.requirePath;
+      requireCache.forEach((requirePath) => {
+        if (requirePath.includes(widgetPath)) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          delete __non_webpack_require__.cache[requirePath];
+        }
+      });
+
+      delete this.widgetMap[key];
+    });
   }
 }

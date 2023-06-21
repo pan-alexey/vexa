@@ -22,6 +22,7 @@ export interface DevServerProps {
 
 export interface Application {
   renderWidget: (widgetName: string) => Promise<string>;
+  clearRegistry: () => Promise<void>;
 }
 
 export class DevServer {
@@ -49,7 +50,7 @@ export class DevServer {
           clearInterval(timer);
           next();
         }
-      }, 100);
+      }, 20);
 
       req.on('close', () => {
         clearInterval(timer);
@@ -62,6 +63,14 @@ export class DevServer {
       if (this.application === null) {
         return res.end('not ready');
       }
+
+      // clear application registry cache
+      this.ready(false);
+      // Дожидаемся предыдущих рендеров (т.к там могут быть lazy load компоненты)
+      // Маловеротяно что рендеринг будет более 250ms
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      await this.application.clearRegistry();
+      this.ready(true);
 
       const state = await this.config.debug.getState({
         url: req.url,

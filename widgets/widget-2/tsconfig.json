@@ -1,7 +1,12 @@
 {
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
   "compilerOptions": {
     "outDir": "./dist",
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "jsx": "react",
     "lib": ["dom", "esnext"],
     "esModuleInterop": true,
@@ -11,6 +16,7 @@
     "module": "commonjs",
     "target": "esnext",
     "declaration": true,
+    "moduleResolution": "node",
     "types": [
       "node",
       "webpack/module"
@@ -18,6 +24,6 @@
   },
   "files": [
     "src/main.d.ts",
-    "src/index.ts",
+    "src/bootstrap.ts",
   ]
 }
