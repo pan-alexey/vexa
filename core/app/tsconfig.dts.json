@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist/types",
+    "module": "commonjs",
+    "target": "es6",
+    "baseUrl": "./src"
+  },
+  "files": [
+    "src/server/index.tsx"
+  ]
+}

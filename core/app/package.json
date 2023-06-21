@@ -17,9 +17,9 @@
   "scripts": {
     "clear": "rimraf build",
     "dev": "yarn build:server && node ./__test__/index.js",
-    "build": "yarn build:server && yarn build:types && yarn build:client",
+    "build": "yarn build:server && yarn build:types ",
     "build:server": "NODE_ENV=production webpack build --config webpack/webpack.server.ts",
-    "build:types": "tsc --project tsconfig-server.json --declaration --emitDeclarationOnly",
+    "build:types": "tsc --project tsconfig.dts.json --declaration --emitDeclarationOnly",
     "build:client": "NODE_ENV=production webpack build --config webpack/webpack.client.ts",
     "test": "jest --config jest.config.ts",
     "test:coverage": "jest --config jest.config.ts  --coverage",

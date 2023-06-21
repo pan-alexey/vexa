@@ -19,18 +19,9 @@ export const loadModule = async (containerPath: string): Promise<React.ElementTy
   // @ts-ignore
   const container = __non_webpack_require__(modulePath);
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const module = await container.get('widget');
-
-  /*
-  // require all widget lazy chunks
-  const chunksPath = path.resolve(containerPath, './chunks');
-  const chunks = await findChunksScripts(chunksPath);
-  for (let i = 0; i < chunks.length; i++) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    __non_webpack_require__(path.resolve(containerPath, chunks[i]));
-  }
-  */
 
   return module().default as React.ElementType;
 };

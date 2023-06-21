@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-import widget from '~widget'; // Подключаем код виджета c использованием alias
+import widget from '~widget'; // import widget with use alias
 import { Application } from '@vexa/core-app/src/server'; // !!!! todo build component
-
 import type { Config } from '@vexa/cli-config';
 
 export const getApplication = (config: Config) => {
