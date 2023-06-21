@@ -78,7 +78,7 @@ export class Registry {
       this.injectWidget(widget);
       return true;
     } catch (error) {
-      console.log('error', error);
+      console.log('loadWidget', error);
       // track error here
     }
 

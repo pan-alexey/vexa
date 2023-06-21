@@ -20,3 +20,13 @@ export const resolvePackageFile = (filePath: string): string | null => {
     return null;
   }
 };
+
+export const isPackage = (name?: string): boolean => {
+  if (!name) return false;
+  try {
+    const resolvePackage = require.resolve(name);
+    return !!resolvePackage;
+  } catch (error) {
+    return false;
+  }
+};

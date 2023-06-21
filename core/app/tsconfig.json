@@ -22,6 +22,5 @@
     "node_modules",
     "dist",
     "**/__test__/*"
-  ],
-  "include": ["src/index.ts"]
+  ]
 }

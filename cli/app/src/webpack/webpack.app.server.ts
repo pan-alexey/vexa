@@ -4,9 +4,7 @@ import type { Config } from '@vexa/cli-config';
 import { widgetSource, widgetAppServer, widgetAppDistServer } from '../shared/constants';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import webpack from 'webpack';
-const { ModuleFederationPlugin } = webpack.container;
-
-const appName = 'application'; // Application is singleton
+import { isPackage } from '../shared/libs/packages';
 
 export default (config: Config): Configuration => {
   const widgetName = config.name;
@@ -21,12 +19,19 @@ export default (config: Config): Configuration => {
     devtool: 'source-map',
     target: 'node',
     output: {
-      uniqueName: appName,
       libraryTarget: 'umd',
       path: widgetAppDistServer,
       filename: 'index.js',
     },
-    externals: [],
+    externals: [
+      // don't build @vexa/core-app
+      function ({ context, request }, callback) {
+        if (isPackage(request) && request === '@vexa/core-app') {
+          return callback(undefined, 'commonjs ' + request);
+        }
+        return callback();
+      },
+    ],
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.css'],
       alias: {
@@ -67,15 +72,6 @@ export default (config: Config): Configuration => {
     },
     plugins: [
       new CleanWebpackPlugin(),
-      new ModuleFederationPlugin({
-        name: appName,
-        library: { type: 'commonjs-module' },
-        shared: {
-          react: { singleton: true, eager: true }, // to external
-          'react-dom': { singleton: true, eager: true }, // to external
-          // moment: { singleton: true },
-        },
-      }),
       new webpack.DefinePlugin({
         __name__: JSON.stringify(widgetName),
       }),

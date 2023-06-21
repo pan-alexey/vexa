@@ -98,12 +98,12 @@ export class Application {
   }
 
   private progress(state: State) {
-    terminal.clear();
+    // terminal.clear();
     console.log('building');
   }
 
   private async done(state: State) {
-    terminal.clear();
+    // terminal.clear();
     console.log('done');
 
     const statuses = {
@@ -114,6 +114,7 @@ export class Application {
     console.log(`Build application: ${statuses.serverApp}`);
     console.log(`Build widget: ${statuses.serverDist}`);
 
+    console.log(state.serverApp.compiler.stats?.toString());
     // console.log('state.serverApp.compiler.stats?.hasErrors()', state.serverApp.compiler.stats?.hasErrors());
     // console.log('state.serverApp.compiler.stats?.hasErrors()', state.serverApp.compiler.err);
 
