@@ -19,7 +19,7 @@ const Component: React.FC<ComponentProps> = ({ data, children, contexts }) => {
 
   return (
     <div className={styles.root}>
-      <div>Widget #1.0.1</div>
+      <div>Widget #3.0.0</div>
       <div>data: ${JSON.stringify(data)}</div>
       <div>time {moment().format()}</div>
       <div>context</div>

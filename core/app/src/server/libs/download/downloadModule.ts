@@ -34,7 +34,7 @@ export const download = async (url: string, output: string) =>
         });
     })
       .on('error', () => {
-        reject(`Error ${uri.protocol} request`);
+        reject(`Error ${uri.protocol} request to ${url}`);
       })
       .end();
   });

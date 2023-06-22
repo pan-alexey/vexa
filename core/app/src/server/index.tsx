@@ -26,6 +26,10 @@ export class Application {
     await this.registry.clear();
   }
 
+  public getRegistryInstance() {
+    return this.registry;
+  }
+
   public async renderWidget(widgetName: string): Promise<string> {
     const widget = await this.registry.getWidget(widgetName);
 
@@ -41,4 +45,6 @@ export class Application {
   public injectWidget(widget: RegistryWidget) {
     this.registry.injectWidget(widget);
   }
+
+  public registerAssets() {};
 }

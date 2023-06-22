@@ -2,17 +2,29 @@ const { Application } = require('../dist/server');
 
 const application = new Application({
   remoteUrls: {
-    '*': 'http://127.0.0.1:9000',
-    'widget.cms.navbar@1-dev': 'http://127.0.0.1:8888/_static_/widget.tgz',
+    'widget.cms.navbar@1': 'http://127.0.0.1:9001/_static_/widget.tgz',
+    'widget.cms.navbar@2': 'http://127.0.0.1:9002/_static_/widget.tgz',
+    'widget.cms.navbar@3': 'http://127.0.0.1:9003/_static_/widget.tgz',
   },
 });
 
 (async () => {
-  const widget1 = await application.renderWidget('widget.cms.navbar@1-dev');
+  const widget1 = await application.renderWidget('widget.cms.navbar@1');
   console.log('widget1:');
   console.log(widget1);
 
-  const widget2 = await application.renderWidget('widget.cms.navbar@1');
+  const widget2 = await application.renderWidget('widget.cms.navbar@2');
   console.log('widget2:');
   console.log(widget2);
+
+  const widget3 = await application.renderWidget('widget.cms.navbar@3');
+  console.log('widget3:');
+  console.log(widget3);
+
+  const registry = application.getRegistryInstance();
+
+  const reqCahe = registry.getWidgetRequireCacheList();
+
+  console.log('reqCahe', reqCahe);
+
 })();

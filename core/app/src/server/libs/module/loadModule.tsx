@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from 'react';
 import path from 'path';
 import fs from 'fs-extra';
@@ -10,16 +11,20 @@ export const findChunksScripts = async (containerPath: string) => {
 };
 
 export const loadModule = async (containerPath: string): Promise<React.ElementType> => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   await __webpack_init_sharing__('default');
 
   const modulePath = path.resolve(containerPath, 'module.js');
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const container = __non_webpack_require__(modulePath);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  try {
+    // @ts-ignore
+    await container.init(__webpack_share_scopes__.default);
+  } catch (e) {
+    // already was initialized
+  }
+
   // @ts-ignore
   const module = await container.get('widget');
 
