@@ -7,9 +7,16 @@ import { loadModule } from '../../libs/module/loadModule';
 import type { WidgetMeta } from '../../../common/types';
 import { resolveTemplateUrls } from './helpers';
 
+export interface WidgetContext {
+  useContext: () => unknown;
+  Provider: React.FC<{ children: React.ReactNode; props?: unknown }>;
+}
+
+export type ModuleType = React.ElementType | WidgetContext;
+
 export interface RegistryWidget {
   name: string;
-  element: React.ElementType;
+  module: ModuleType;
   requirePath?: string; // undefined if widget type is debug or core
   meta: WidgetMeta;
   assets: {
@@ -30,10 +37,6 @@ export class Registry {
     this.remoteUrls = props.remoteUrls;
   }
 
-  public async waitFor() {
-    //
-  }
-
   public injectWidget(widget: RegistryWidget) {
     this.widgetMap[widget.name] = widget;
   }
@@ -49,6 +52,10 @@ export class Registry {
   }
 
   public async loadWidget(widgetName: string): Promise<boolean> {
+    if (this.widgetMap[widgetName]) {
+      return true;
+    }
+
     const meta = getWidgetMeta(widgetName);
     if (meta === null) {
       // track error here
@@ -64,10 +71,10 @@ export class Registry {
 
     try {
       const remoteUrl = resolveTemplateUrls(remoteUrlTemplate, widgetName);
-      const { element, requirePath } = await this.downloadWidget(widgetName, remoteUrl);
+      const { module, requirePath } = await this.downloadWidget(widgetName, remoteUrl);
       const widget: RegistryWidget = {
         name: widgetName,
-        element,
+        module: module as WidgetContext,
         requirePath,
         meta,
         assets: {
@@ -88,16 +95,16 @@ export class Registry {
   private async downloadWidget(
     widgetName: string,
     remoteUrl: string,
-  ): Promise<{ element: React.ElementType; requirePath: string }> {
+  ): Promise<{ module: unknown; requirePath: string }> {
     const downloadPath = path.resolve(widgetsPath, widgetName);
     const requirePath = path.resolve(downloadPath, './server');
 
     await downloadModule(remoteUrl, downloadPath);
-    const element = await loadModule(requirePath);
+    const module = await loadModule(requirePath);
 
     return {
       requirePath,
-      element,
+      module,
     };
   }
 

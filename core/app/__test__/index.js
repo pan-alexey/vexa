@@ -1,4 +1,4 @@
-const { Application } = require('../dist/server');
+const { Application, getWidgetMeta } = require('../dist/server');
 
 const application = new Application({
   remoteUrls: {
@@ -20,11 +20,4 @@ const application = new Application({
   const widget3 = await application.renderWidget('widget.cms.navbar@3');
   console.log('widget3:');
   console.log(widget3);
-
-  const registry = application.getRegistryInstance();
-
-  const reqCahe = registry.getWidgetRequireCacheList();
-
-  console.log('reqCahe', reqCahe);
-
 })();

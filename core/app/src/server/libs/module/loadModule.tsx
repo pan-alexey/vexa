@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React from 'react';
 import path from 'path';
 import fs from 'fs-extra';
 
@@ -10,7 +9,7 @@ export const findChunksScripts = async (containerPath: string) => {
   return list.filter(isJS);
 };
 
-export const loadModule = async (containerPath: string): Promise<React.ElementType> => {
+export const loadModule = async (containerPath: string): Promise<unknown> => {
   // @ts-ignore
   await __webpack_init_sharing__('default');
 
@@ -28,5 +27,5 @@ export const loadModule = async (containerPath: string): Promise<React.ElementTy
   // @ts-ignore
   const module = await container.get('widget');
 
-  return module().default as React.ElementType;
+  return module().default as unknown;
 };

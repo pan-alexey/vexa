@@ -4,23 +4,29 @@ import styles from './styles.module.css';
 
 interface ComponentProps {
   contexts: unknown[];
-  data?: unknown;
+  props?: unknown;
   children?: React.ReactNode;
+  $rootContext: () => unknown;
 }
 const name = 'lazy';
 const LazyComponent = React.lazy(() => import('./components/' + name));
 // 2sd
-const Component: React.FC<ComponentProps> = ({ data, children, contexts }) => {
+const Component: React.FC<ComponentProps> = ({ $rootContext, props, children, contexts }) => {
   if (contexts) {
     // @ts-ignore
     const useContext1 = contexts[0]();
     console.log('useContext1', useContext1);
   }
 
+  if ($rootContext) {
+    const rootContext = $rootContext()
+    console.log('$rootContext', rootContext);
+  }
+
   return (
     <div className={styles.root}>
       <div>Widget #1.0.1</div>
-      <div>data: ${JSON.stringify(data)}</div>
+      <div>data: ${JSON.stringify(props)}</div>
       <div>time {moment().format()}</div>
       <div>context</div>
       <div data-name="React lazy:">
@@ -29,7 +35,6 @@ const Component: React.FC<ComponentProps> = ({ data, children, contexts }) => {
         </React.Suspense>
       </div>
       <div data-name="children" className={styles.children}>{children}</div>
-      
     </div>
   );
 };

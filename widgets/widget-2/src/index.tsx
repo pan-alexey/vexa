@@ -15,6 +15,8 @@ const Component: React.FC<ComponentProps> = ({ data, children, contexts }) => {
     // @ts-ignore
     const useContext1 = contexts[0]();
     console.log('useContext1', useContext1);
+  } else {
+    // throw new Error('Custom error');
   }
 
   return (
@@ -29,7 +31,6 @@ const Component: React.FC<ComponentProps> = ({ data, children, contexts }) => {
         </React.Suspense>
       </div>
       <div data-name="children" className={styles.children}>{children}</div>
-      
     </div>
   );
 };
