@@ -1,6 +1,6 @@
-import { WidgetMeta } from '../types';
+import { ComponentMeta } from '../types';
 
-export const getWidgetMeta = (widgetName: string): null | WidgetMeta => {
+export const getMeta = (widgetName: string): null | ComponentMeta => {
   try {
     const [widgetPart = '', version = ''] = widgetName.split('@');
     const [type, owner, name] = widgetPart.split('.');
@@ -13,7 +13,7 @@ export const getWidgetMeta = (widgetName: string): null | WidgetMeta => {
       return null;
     }
 
-    const result: WidgetMeta = {
+    const result: ComponentMeta = {
       type: type,
       owner: owner,
       name: name,

@@ -3,12 +3,12 @@ import pretty from 'pretty';
 import { Registry } from './components/registry';
 import { Layout } from './components/layout';
 import { renderComponent } from './libs/render';
-import { getWidgetMeta } from '../common/widget/getWidgetMeta';
+import { getMeta } from '../common/component/getMeta';
 // import { data } from './data';
 // import { renderApp } from './base';
 // export type { RegistryWidget };
 
-export { getWidgetMeta };
+export { getMeta };
 
 export interface ApplicationProps {
   remoteUrls: Record<string, string>;
@@ -33,14 +33,14 @@ export class Application {
     return await this.layout.render(state);
   }
 
-  public async renderWidget(widgetName: string): Promise<string> {
-    const widget = await this.registry.getWidget(widgetName);
-    if (widget === null) {
-      return 'null';
-    }
-    const html = await renderComponent(<widget.element />);
-    return pretty(html);
-  }
+  // public async renderWidget(widgetName: string): Promise<string> {
+  //   const widget = await this.registry.getWidget(widgetName);
+  //   if (widget === null) {
+  //     return 'null';
+  //   }
+  //   const html = await renderComponent(<widget.element />);
+  //   return pretty(html);
+  // }
 
   // public registerAssets(): void {
   //   console.log('registerAssets');

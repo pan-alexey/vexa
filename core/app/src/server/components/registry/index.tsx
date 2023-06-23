@@ -1,24 +1,26 @@
 import React from 'react';
 import path from 'path';
 import { widgetsPath } from '../../constants';
-import { getWidgetMeta } from '../../../common/widget/getWidgetMeta';
+import { getMeta } from '../../../common/component/getMeta';
 import { downloadModule } from '../../libs/download/downloadModule';
 import { loadModule } from '../../libs/module/loadModule';
-import type { WidgetMeta } from '../../../common/types';
+import type { ComponentMeta } from '../../../common/types';
 import { resolveTemplateUrls } from './helpers';
 
-export interface WidgetContext {
+export interface ModuleContext {
   useContext: () => unknown;
   Provider: React.FC<{ children: React.ReactNode; props?: unknown }>;
 }
 
-export type ModuleType = React.ElementType | WidgetContext;
+export type ModuleWidget = React.ElementType;
 
-export interface RegistryWidget {
+export type ModuleType = React.ElementType | ModuleContext;
+
+export interface RegistryComponent {
   name: string;
   module: ModuleType;
   requirePath?: string; // undefined if widget type is debug or core
-  meta: WidgetMeta;
+  meta: ComponentMeta;
   assets: {
     css: Record<string, string>;
     js: Record<string, string>;
@@ -31,32 +33,32 @@ export interface RegistryProps {
 
 export class Registry {
   private remoteUrls: Record<string, string>;
-  private widgetMap: Record<string, RegistryWidget> = {};
+  private moduleMap: Record<string, RegistryComponent> = {};
 
   constructor(props: RegistryProps) {
     this.remoteUrls = props.remoteUrls;
   }
 
-  public injectWidget(widget: RegistryWidget) {
-    this.widgetMap[widget.name] = widget;
+  public injectWidget(widget: RegistryComponent) {
+    this.moduleMap[widget.name] = widget;
   }
 
-  public async getWidget(widgetName: string): Promise<RegistryWidget | null> {
-    if (this.widgetMap[widgetName]) {
-      return this.widgetMap[widgetName];
+  public async getWidget(widgetName: string): Promise<RegistryComponent | null> {
+    if (this.moduleMap[widgetName]) {
+      return this.moduleMap[widgetName];
     }
 
     await this.loadWidget(widgetName);
-    const widget = this.widgetMap[widgetName];
+    const widget = this.moduleMap[widgetName];
     return widget ? widget : null;
   }
 
   public async loadWidget(widgetName: string): Promise<boolean> {
-    if (this.widgetMap[widgetName]) {
+    if (this.moduleMap[widgetName]) {
       return true;
     }
 
-    const meta = getWidgetMeta(widgetName);
+    const meta = getMeta(widgetName);
     if (meta === null) {
       // track error here
       return false;
@@ -72,9 +74,9 @@ export class Registry {
     try {
       const remoteUrl = resolveTemplateUrls(remoteUrlTemplate, widgetName);
       const { module, requirePath } = await this.downloadWidget(widgetName, remoteUrl);
-      const widget: RegistryWidget = {
+      const widget: RegistryComponent = {
         name: widgetName,
-        module: module as WidgetContext,
+        module: module as ModuleType,
         requirePath,
         meta,
         assets: {
@@ -126,8 +128,8 @@ export class Registry {
   public async clear() {
     const requireCache = this.getWidgetRequireCacheList();
 
-    Object.keys(this.widgetMap).forEach((key) => {
-      const widget = this.widgetMap[key];
+    Object.keys(this.moduleMap).forEach((key) => {
+      const widget = this.moduleMap[key];
       if (!widget.requirePath) {
         return;
       }
@@ -141,7 +143,7 @@ export class Registry {
         }
       });
 
-      delete this.widgetMap[key];
+      delete this.moduleMap[key];
     });
   }
 }

@@ -121,16 +121,20 @@ export class Application {
       if (statuses.serverApp !== 'error' && statuses.serverDist !== 'error') {
         await this.processDone();
         await this.registerApp();
-        this.server.ready(true);
         // console.log('constants.widgetDist', constants.widgetDist);
         console.log(`Dev server run in http://127.0.0.1:${this.server.getPort()}`);
         console.log(`Widget allow in http://127.0.0.1:${this.server.getPort()}/_static_/widget.tgz`);
+
+        this.server.ready(true);
         return;
       }
     } catch (error) {
       console.log('Error register application');
     }
 
+    if (statuses.serverApp === 'error') {
+      console.log(state.serverApp.compiler.stats?.toString());
+    }
     this.server.ready(false);
   }
 

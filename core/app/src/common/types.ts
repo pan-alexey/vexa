@@ -1,7 +1,7 @@
-export type WidgetType = 'widget' | 'context';
+export type ComponentType = 'widget' | 'context';
 
-export interface WidgetMeta {
-  type: WidgetType;
+export interface ComponentMeta {
+  type: ComponentType;
   owner: string;
   name: string;
   version: string;

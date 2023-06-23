@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import widget from '~widget'; // import widget with use alias
-import { Application, getWidgetMeta } from '@vexa/core-app/src/server'; // !!!! todo build component
+import { Application, getMeta } from '@vexa/core-app/src/server'; // !!!! todo build component
 import type { Config } from '@vexa/cli-config';
 
 export const getApplication = (config: Config) => {
@@ -11,7 +11,7 @@ export const getApplication = (config: Config) => {
 
   // @ts-ignore
   const widgetName = __name__ as string;
-  const meta = getWidgetMeta(widgetName);
+  const meta = getMeta(widgetName);
 
   if (meta === null) {
     // error;
