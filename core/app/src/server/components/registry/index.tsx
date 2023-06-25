@@ -87,7 +87,7 @@ export class Registry {
       this.injectWidget(widget);
       return true;
     } catch (error) {
-      console.log('error', error);
+      console.log('error loadWidget', error);
       // track error here
     }
 
@@ -127,23 +127,25 @@ export class Registry {
 
   public async clear() {
     const requireCache = this.getWidgetRequireCacheList();
+    console.log('clear req', widgetsPath);
+
+    // clear all cache
+    requireCache.forEach((requirePath) => {
+      if (requirePath.includes(widgetsPath)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        delete __non_webpack_require__.cache[requirePath];
+      }
+    });
 
     Object.keys(this.moduleMap).forEach((key) => {
       const widget = this.moduleMap[key];
       if (!widget.requirePath) {
         return;
       }
-
-      const widgetPath = widget.requirePath;
-      requireCache.forEach((requirePath) => {
-        if (requirePath.includes(widgetPath)) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          delete __non_webpack_require__.cache[requirePath];
-        }
-      });
-
       delete this.moduleMap[key];
     });
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 }

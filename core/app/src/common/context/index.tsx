@@ -8,7 +8,6 @@ export interface ContextInterface<ContextType> {
 export type ContextType = {
   value: string;
   setValue: (newValue: string) => void;
-  props: unknown;
 };
 
 const Context = React.createContext<ContextType | null>(null);
@@ -20,7 +19,7 @@ const Provider: React.FC<{ children: React.ReactNode; props?: unknown }> = ({ ch
     setState(newValue);
   };
 
-  return <Context.Provider value={{ props, value: state, setValue }}>{children}</Context.Provider>;
+  return <Context.Provider value={{ value: state, setValue }}>{children}</Context.Provider>;
 };
 
 const useContext = () => {

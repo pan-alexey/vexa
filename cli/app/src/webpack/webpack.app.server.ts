@@ -73,7 +73,6 @@ export default (config: Config): Configuration => {
         shared: {
           react: { singleton: true, eager: true }, // to external
           'react-dom': { singleton: true, eager: true }, // to external
-          // moment: { singleton: true, eager: true },
         },
       }),
       new webpack.DefinePlugin({

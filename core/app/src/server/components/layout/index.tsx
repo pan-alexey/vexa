@@ -1,31 +1,22 @@
 import React from 'react';
-import { Registry } from '../registry';
+import type { Registry, ModuleContext } from '../registry';
+import { makeRootContext, makeContext } from './context';
 // import { getAllWidgetNames } from './components/state';
 import { renderComponent } from '../../libs/render';
 import { getUniqueId } from '../../libs/utils/uniqid';
+
 import { makeWidget } from './widget';
+import type { Context } from './context';
+
 export interface Widget {
   name: string;
   props: unknown;
+  slots?: Record<string, Widget[]>;
 }
 
 export interface LayoutProps {
   registry: Registry;
 }
-
-// Create custom tags, for create widget without wrapper tags
-// const HTMLCustomTag = 'HTMLCustomTag';
-// const clearCustomTags = (html: string): string => {
-//   return html.replace(/<HTMLCustomTag>/g, '').replace(/<HTMLCustomTag>/g, '');
-// };
-// declare global {
-//   // eslint-disable-next-line @typescript-eslint/no-namespace
-//   namespace JSX {
-//     interface IntrinsicElements {
-//       [HTMLCustomTag]: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
-//     }
-//   }
-// }
 
 export class Layout {
   private registry: Registry;
@@ -39,19 +30,21 @@ export class Layout {
 
   public async render(state: unknown): Promise<string> {
     const { layout } = state as { layout: Widget[] };
+
     // Start render
-    const Body = await this.renderWidgetList(layout);
+    const rootContext: Context = makeRootContext();
+    const Body = await this.renderWidgetList(layout, rootContext);
     const html = await renderComponent(Body);
     // Stop render
 
     return html;
   }
 
-  public async renderWidgetList(widgets: Widget[]): Promise<React.ReactElement> {
+  public async renderWidgetList(widgets: Widget[], context: Context): Promise<React.ReactElement> {
     const promises: Array<Promise<React.ReactElement>> = [];
     for (let i = 0; i < widgets.length; i++) {
-      const widget = widgets[i];
-      const element = this.renderWidget(widget.name, widget.props);
+      const { name, props, slots = {} } = widgets[i];
+      const element = this.renderWidget({ name, props, slots, context });
       promises.push(element);
     }
     const elements = await Promise.all(promises);
@@ -64,43 +57,63 @@ export class Layout {
     );
   }
 
-  public async renderWidget(name: string, props: unknown): Promise<React.ReactElement> {
-    const widget = await this.registry.getWidget(name);
+  public async renderWidget({
+    name,
+    props,
+    slots = {},
+    context,
+  }: {
+    name: string;
+    props: unknown;
+    slots: Record<string, Widget[]>;
+    context: Context;
+  }): Promise<React.ReactElement> {
+    const module = await this.registry.getWidget(name);
 
-    if (widget === null) {
+    if (module === null) {
       return (
-        <div data-widget-name={name} style={{ display: 'none' }}>
-          Widget not render (widget registry problem)
+        <div data-module-name={name} style={{ display: 'none' }}>
+          Module not render (widget registry problem)
         </div>
       );
     }
 
-    if (widget.meta.type === 'context') {
-      console.log(widget.module);
+    if (module.meta.type === 'widget') {
+      // use custom trycatch
+      try {
+        const Component = makeWidget(module.module as React.ElementType, props, context);
+        const html = await renderComponent(Component);
+        return <div data-module-name={name} dangerouslySetInnerHTML={{ __html: html }} />;
+      } catch (error) {
+        console.log('error!!!', error);
+        // track render error
 
-      return (
-        <div data-widget-name={name} style={{ display: 'none' }}>
-          Widget not render (is context type)
-        </div>
-      );
+        return (
+          <div
+            style={{ display: 'none' }}
+            data-widget-name={name}
+            dangerouslySetInnerHTML={{ __html: 'Widget not render (render problem)' }}
+          />
+        );
+      }
     }
 
-    // use custom trycatch
-    try {
-      const Component = makeWidget(widget.module as React.ElementType, props);
-      const html = await renderComponent(Component);
-      return <div data-widget-name={name} dangerouslySetInnerHTML={{ __html: html }} />;
-    } catch (error) {
-      console.log('error', error);
-      // track render error
+    if (module.meta.type === 'context') {
+      const children = slots.children;
+      if (children === undefined) {
+        return <div data-module-name={name}>Context not render (context don't has children slots)</div>;
+      }
 
-      return (
-        <div
-          style={{ display: 'none' }}
-          data-widget-name={name}
-          dangerouslySetInnerHTML={{ __html: 'Widget not render (render problem)' }}
-        />
-      );
+      const newContext = makeContext({
+        name: module.name,
+        parentContext: context,
+        module: module.module as ModuleContext,
+        props: props,
+      });
+
+      return await this.renderWidgetList(children, newContext);
     }
+
+    return <div>Module {name} not render (unknown module type)</div>;
   }
 }

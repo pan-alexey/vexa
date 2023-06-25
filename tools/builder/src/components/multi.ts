@@ -8,7 +8,6 @@ export type MultiBuilderState = {
 
 export class MultiBuilder<Builders extends Record<string, Builder>> {
   private status: BuilderStatus = 'created';
-  private startTime = 0;
 
   private compilers: {
     [Prop in keyof Builders]: Builder;

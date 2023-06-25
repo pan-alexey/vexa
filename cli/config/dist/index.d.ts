@@ -1,3 +1,6 @@
+export interface RemoteState {
+    layout: [];
+}
 export interface Config {
     name: string;
     debug: {
