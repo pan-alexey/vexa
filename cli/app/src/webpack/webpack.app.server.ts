@@ -17,7 +17,7 @@ export default (config: Config): Configuration => {
     entry: {
       index: widgetAppServer,
     },
-    mode: 'production',
+    mode: 'development',
     devtool: 'source-map',
     target: 'node',
     output: {

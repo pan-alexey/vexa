@@ -127,11 +127,9 @@ export class Registry {
 
   public async clear() {
     const requireCache = this.getWidgetRequireCacheList();
-    console.log('clear req', widgetsPath);
-
     // clear all cache
     requireCache.forEach((requirePath) => {
-      if (requirePath.includes(widgetsPath)) {
+      if (requirePath.includes(widgetsPath) && !requirePath.includes('chunks/vendor')) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         delete __non_webpack_require__.cache[requirePath];
