@@ -1,6 +1,9 @@
 import path from 'path';
 import { resolvePackageFile } from '../libs/packages';
 
+// For http server
+export const widgetStaticPath = '_static_';
+
 // For build widget packages
 export const packagePath = process.cwd();
 export const widgetDist = path.resolve(packagePath, './dist') as string;

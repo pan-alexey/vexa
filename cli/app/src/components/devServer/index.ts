@@ -7,7 +7,6 @@ import { renderHtml } from './render';
 
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { createHotServer } from 'webpack-hmr-server';
-import fs from 'fs-extra';
 
 interface Manifest {
   js: {

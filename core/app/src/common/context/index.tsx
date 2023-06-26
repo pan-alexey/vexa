@@ -12,7 +12,7 @@ export type ContextType = {
 
 const Context = React.createContext<ContextType | null>(null);
 
-const Provider: React.FC<{ children: React.ReactNode; props?: unknown }> = ({ children, props }) => {
+const Provider: React.FC<{ children: React.ReactNode; props?: unknown }> = ({ children }) => {
   const [state, setState] = React.useState<string>('rootContext');
 
   const setValue = (newValue: string) => {

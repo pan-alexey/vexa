@@ -4,7 +4,7 @@ import { makeRootContext, makeContext } from './context';
 // import { getAllWidgetNames } from './components/state';
 import { renderComponent } from '../../libs/render';
 import { getUniqueId } from '../../libs/utils/uniqid';
-
+import { promiseAllKeys } from '../../../common/utils/promises';
 import { makeWidget } from './widget';
 import type { Context } from './context';
 
@@ -24,7 +24,7 @@ export class Layout {
     this.registry = props.registry;
   }
 
-  public async renderHead(state: unknown) {
+  public async renderHead(state: unknown, ignoreWidgets: Array<string> = []) {
     return '';
   }
 
@@ -57,6 +57,18 @@ export class Layout {
     );
   }
 
+  public async renderSlots(
+    slots: Record<string, Widget[]>,
+    context: Context,
+  ): Promise<Record<string, React.ReactElement>> {
+    const promiseKeys: Record<string, Promise<React.ReactElement>> = {};
+
+    Object.keys(slots).forEach((key) => {
+      promiseKeys[key] = this.renderWidgetList(slots[key], context);
+    });
+    return await promiseAllKeys(promiseKeys);
+  }
+
   public async renderWidget({
     name,
     props,
@@ -79,13 +91,24 @@ export class Layout {
     }
 
     if (module.meta.type === 'widget') {
-      // use custom trycatch
+      let widgetSlots: Record<string, React.ReactElement> = {};
       try {
-        const Component = makeWidget(module.module as React.ElementType, props, context);
+        widgetSlots = await this.renderSlots(slots, context);
+      } catch (error) {
+        console.log('Error slots render', error);
+      }
+
+      try {
+        const Component = makeWidget({
+          element: module.module as React.ElementType,
+          props,
+          context,
+          slots: widgetSlots,
+        });
         const html = await renderComponent(Component);
         return <div data-module-name={name} dangerouslySetInnerHTML={{ __html: html }} />;
       } catch (error) {
-        console.log('error!!!', error);
+        console.log('Error widget render', error);
         // track render error
 
         return (

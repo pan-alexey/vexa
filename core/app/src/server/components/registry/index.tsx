@@ -19,7 +19,7 @@ export type ModuleType = React.ElementType | ModuleContext;
 export interface RegistryComponent {
   name: string;
   module: ModuleType;
-  requirePath?: string; // undefined if widget type is debug or core
+  requirePath: string;
   meta: ComponentMeta;
   assets: {
     css: Record<string, string>;
@@ -39,7 +39,11 @@ export class Registry {
     this.remoteUrls = props.remoteUrls;
   }
 
-  public injectWidget(widget: RegistryComponent) {
+  public setupRemoteWidgetUrl(widget: { name: string; staticPath: string }) {
+    this.remoteUrls[widget.name] = widget.staticPath; // rewrite if exist
+  }
+
+  private injectWidget(widget: RegistryComponent) {
     this.moduleMap[widget.name] = widget;
   }
 
@@ -73,6 +77,7 @@ export class Registry {
 
     try {
       const remoteUrl = resolveTemplateUrls(remoteUrlTemplate, widgetName);
+
       const { module, requirePath } = await this.downloadWidget(widgetName, remoteUrl);
       const widget: RegistryComponent = {
         name: widgetName,
@@ -127,23 +132,15 @@ export class Registry {
 
   public async clear() {
     const requireCache = this.getWidgetRequireCacheList();
-    // clear all cache
     requireCache.forEach((requirePath) => {
+      // not clear chunks/vendor, because probably
+      // shared module federation can used chunks/vendor as dependency
       if (requirePath.includes(widgetsPath) && !requirePath.includes('chunks/vendor')) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         delete __non_webpack_require__.cache[requirePath];
       }
     });
-
-    Object.keys(this.moduleMap).forEach((key) => {
-      const widget = this.moduleMap[key];
-      if (!widget.requirePath) {
-        return;
-      }
-      delete this.moduleMap[key];
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    this.moduleMap = {};
   }
 }

@@ -11,15 +11,20 @@ interface ComponentProps {
 const name = 'lazy';
 const LazyComponent = React.lazy(() => import('./components/' + name));
 // 2sd
-const Component: React.FC<ComponentProps> = ({ props, children, hooks }) => {
+const Component: React.FC<ComponentProps> = ({ props, children, hooks, slots }) => {
   // console.log('hooks', hooks[0].useContext());
   const rootContext = hooks[0].useContext() as { value: string };
 
   let parentContext: { value: unknown } = { value: null };
   if (hooks[1]) {
     parentContext = hooks[1].useContext() as { value: string };
+
     console.log('parentContext', parentContext);
   }
+
+  console.log('slots', slots);
+
+  // console.log('slots', slots);
 
   return (
     <div className={styles.root}>

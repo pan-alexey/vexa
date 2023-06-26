@@ -1,31 +1,18 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import widget from '~widget'; // import widget with use alias
-import { Application, getMeta } from '@vexa/core-app/src/server'; // !!!! todo build component
+import { Application } from '@vexa/core-app';
 import type { Config } from '@vexa/cli-config';
+import { widgetStaticPath } from '../src/shared/constants';
 
 export const getApplication = (config: Config) => {
   const application = new Application({
     remoteUrls: config.debug.remotes,
   });
 
-  // @ts-ignore
-  const widgetName = __name__ as string;
-  const meta = getMeta(widgetName);
-
-  if (meta === null) {
-    // error;
-    return application;
-  }
-
-  application.registry.injectWidget({
-    name: widgetName,
-    module: widget,
-    meta,
-    assets: {
-      css: {},
-      js: {},
-    },
+  // Устанавливаем настройки для виджета
+  const widgetHttpPort = config.debug.httpPort;
+  const widgetHttpPath = `http://127.0.0.1:${widgetHttpPort}/${widgetStaticPath}/widget.tgz`;
+  application.registry.setupRemoteWidgetUrl({
+    name: config.name,
+    staticPath: widgetHttpPath,
   });
 
   return application;

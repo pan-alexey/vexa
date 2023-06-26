@@ -13,7 +13,7 @@ export type ContextType = {
 
 const Context = React.createContext<ContextType | null>(null);
 const Provider: React.FC<{ children: React.ReactNode; props?: unknown }> = ({ children, props }) => {
-  const [state, setState] = React.useState<string>('context.cms.main@10');
+  const [state, setState] = React.useState<string>('context.cms.main@10000');
 
   const setValue = (newValue: string) => {
     setState(newValue);

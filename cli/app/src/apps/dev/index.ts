@@ -10,7 +10,6 @@ import { compress } from '../../shared/libs/compress';
 import { getBuildStatus } from '../../shared/helpers/buildStatus';
 import { DevServer, Application as DevServerApp } from '../../components/devServer';
 import type { Config } from '@vexa/cli-config';
-// import type { Application as CoreApp } from '@vexa/core-app/src/server';
 
 type Builders = {
   // appClient: WatchBuilder;
@@ -32,6 +31,8 @@ export class Application {
 
   constructor(config: Config) {
     this.config = config;
+
+    // validate config here
 
     this.builder = new MultiBuilder({
       serverDist: serverDist(this.config),
@@ -56,7 +57,7 @@ export class Application {
   }
 
   private async runServer() {
-    this.server.public(constants.widgetDist, '/_static_');
+    this.server.public(constants.widgetDist, `/${constants.widgetStaticPath}`);
     this.server.registerRouter();
     await this.server.listen();
   }
@@ -99,7 +100,7 @@ export class Application {
 
   private progress(state: State) {
     terminal.clear();
-    console.log('building');
+    console.log('building', state.serverApp.progress, state.serverDist.progress);
   }
 
   private async done(state: State) {
@@ -121,9 +122,10 @@ export class Application {
       if (statuses.serverApp !== 'error' && statuses.serverDist !== 'error') {
         await this.processDone();
         await this.registerApp();
-        // console.log('constants.widgetDist', constants.widgetDist);
         console.log(`Dev server run in http://127.0.0.1:${this.server.getPort()}`);
-        console.log(`Widget allow in http://127.0.0.1:${this.server.getPort()}/_static_/widget.tgz`);
+        console.log(
+          `Widget tgz allow in http://127.0.0.1:${this.server.getPort()}/${constants.widgetStaticPath}/widget.tgz`,
+        );
 
         this.server.ready(true);
         return;
@@ -158,8 +160,7 @@ export class Application {
     const appServerDist = constants.widgetAppDistServer;
     const modulePath = path.resolve(appServerDist, './index.js');
 
-    // clear require cache for server application
-    // delete require.cache[require.resolve(modulePath)];
+    // Clear require cache for server application
     Object.keys(require.cache).forEach((element) => {
       if (element.includes(appServerDist)) {
         delete require.cache[require.resolve(element)];

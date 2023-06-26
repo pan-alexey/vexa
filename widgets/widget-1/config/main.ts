@@ -23,10 +23,28 @@ export default config(async () => {
             { name: 'widget.cms.navbar@1', props: { data: 'data' } },
             { name: 'widget.cms.navbar@3', props: { data: 'data' } },
             { name: 'widget.cms.navbar@1', props: { data: 'data' } },
+            {
+              name: 'widget.cms.navbar@1',
+              props: {
+                props: 'props1',
+              },
+              slots: {
+                slots1: [
+                  { name: 'widget.cms.navbar@1', props: { data: 'data' } },
+                  { name: 'widget.cms.navbar@3', props: { data: 'data' } },
+                ],
+                slots2: [
+                  { name: 'widget.cms.navbar@2', props: { data: 'data' } },
+                  { name: 'widget.cms.navbar@3', props: { data: 'data' } },
+                ],
+              },
+            },
             { name: 'widget.cms.navbar@2', props: { data: 'data' } },
             {
               name: 'context.cms.main@1',
-              props: { props: 'props1' },
+              props: {
+                props: 'props1',
+              },
               slots: {
                 children: [
                   { name: 'widget.cms.navbar@1', props: { data: 'data' } },
