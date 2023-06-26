@@ -18,11 +18,12 @@ const Component: React.FC<ComponentProps> = ({ props, children, hooks }) => {
   let parentContext: { value: unknown } = { value: null };
   if (hooks[1]) {
     parentContext = hooks[1].useContext() as { value: string };
+    console.log('parentContext', parentContext);
   }
 
   return (
     <div className={styles.root}>
-      <div>Widget #1.0</div>
+      <div>Widget #1.0.00</div>
       <div>data: ${JSON.stringify(props)}</div>
       <div>time {moment().format()}</div>
       <div>rootContext value {rootContext.value}</div>

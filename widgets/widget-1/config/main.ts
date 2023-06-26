@@ -26,7 +26,7 @@ export default config(async () => {
             { name: 'widget.cms.navbar@2', props: { data: 'data' } },
             {
               name: 'context.cms.main@1',
-              props: { data: 'data' },
+              props: { props: 'props1' },
               slots: {
                 children: [
                   { name: 'widget.cms.navbar@1', props: { data: 'data' } },
