@@ -46,8 +46,9 @@ export default (): Configuration => {
         name: appName,
         library: { type: 'commonjs-module' },
         shared: {
-          react: { singleton: true, eager: true }, // to external
-          'react-dom': { singleton: true, eager: true }, // to external
+          react: { singleton: true, eager: true },
+          'react-dom': { singleton: true, eager: true },
+          moment: { singleton: true, eager: true },
         },
       }),
     ],

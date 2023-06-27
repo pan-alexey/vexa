@@ -28,7 +28,7 @@ const Component: React.FC<ComponentProps> = ({ props, children, hooks, slots }) 
 
   return (
     <div className={styles.root}>
-      <div>Widget #1.0.00</div>
+      <div>Widget #1.0.0</div>
       <div>data: ${JSON.stringify(props)}</div>
       <div>time {moment().format()}</div>
       <div>rootContext value {rootContext.value}</div>

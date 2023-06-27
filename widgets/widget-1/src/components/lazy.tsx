@@ -1,6 +1,6 @@
 import React from 'react';
 
-const a = [1, 2, 3, 4, 5];
+const a = [1, 2, 3];
 const LazyComponent: React.FC = () => {
   return (
     <div>

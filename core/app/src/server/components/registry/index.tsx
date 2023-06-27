@@ -134,13 +134,20 @@ export class Registry {
     const requireCache = this.getWidgetRequireCacheList();
     requireCache.forEach((requirePath) => {
       // not clear chunks/vendor, because probably
-      // shared module federation can used chunks/vendor as dependency
-      if (requirePath.includes(widgetsPath) && !requirePath.includes('chunks/vendor')) {
+      // shared module federation can used chunks as dependency
+      if (requirePath.includes(widgetsPath) && !requirePath.includes('chunks')) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         delete __non_webpack_require__.cache[requirePath];
       }
     });
+
+    // Object.keys(this.moduleMap).forEach((key) => {
+    //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //   // @ts-ignore
+    //   delete __non_webpack_require__.cache[this.moduleMap[key].requirePath];
+    // });
+
     this.moduleMap = {};
   }
 }

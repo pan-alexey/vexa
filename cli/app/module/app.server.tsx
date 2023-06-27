@@ -1,8 +1,9 @@
 import { Application } from '@vexa/core-app';
 import type { Config } from '@vexa/cli-config';
-import { widgetStaticPath } from '../src/shared/constants';
+// import { widgetStaticPath } from '../src/shared/constants';
 
 export const getApplication = (config: Config) => {
+  const widgetStaticPath = '_static_';
   const application = new Application({
     remoteUrls: config.debug.remotes,
   });

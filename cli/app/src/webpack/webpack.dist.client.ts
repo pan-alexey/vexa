@@ -1,7 +1,8 @@
 import { Configuration } from 'webpack';
-import { widgetSource, widgetBootstrap, widgetBuildServer } from '../shared/constants';
+import { widgetSource, widgetBootstrap, widgetBuildClient } from '../shared/constants';
 import type { Config } from '@vexa/cli-config';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import * as path from 'path';
 import webpack from 'webpack';
 const { ModuleFederationPlugin } = webpack.container;
@@ -12,18 +13,19 @@ export default (config: Config): Configuration => {
   const normalizeName = 'widget'; //config.widgetName;
 
   const webpackConfig: Configuration = {
-    target: 'node',
+    target: 'web',
     mode: 'development',
     devtool: 'source-map',
+    cache: false,
     entry: {
       index: widgetBootstrap,
     },
     output: {
+      uniqueName: widgetName,
       publicPath: 'auto',
-      libraryTarget: 'commonjs-module',
+      path: widgetBuildClient,
       filename: `[name].js`,
       chunkFilename: './chunks/[contenthash].js',
-      path: widgetBuildServer,
     },
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.css'],
@@ -33,7 +35,7 @@ export default (config: Config): Configuration => {
       },
     },
     optimization: {
-      runtimeChunk: true,
+      runtimeChunk: false,
       splitChunks: {
         chunks: 'async',
         maxInitialRequests: Infinity,
@@ -71,6 +73,9 @@ export default (config: Config): Configuration => {
           test: /\.css$/i,
           use: [
             {
+              loader: MiniCssExtractPlugin.loader,
+            },
+            {
               loader: 'css-loader',
               options: {
                 modules: {
@@ -88,18 +93,18 @@ export default (config: Config): Configuration => {
       new CleanWebpackPlugin(),
       new ModuleFederationPlugin({
         name: widgetName,
-        library: { type: 'umd' },
+        library: { type: 'window', name: ['widgets', widgetName] },
         filename: 'module.js',
         exposes: { widget: ['./src/index'] },
         shared: {
           react: { singleton: true }, // eager: true
           'react-dom': { singleton: true },
-          moment: { singleton: true },
         },
       }),
       new webpack.DefinePlugin({
         __name__: JSON.stringify(widgetName),
       }),
+      new MiniCssExtractPlugin(),
     ],
   };
 

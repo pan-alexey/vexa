@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import { throttle } from 'lodash';
 import * as constants from '../../shared/constants';
 import { watchBuilder as serverDist } from '../../components/builders/server.dist';
+import { watchBuilder as clientDist } from '../../components/builders/client.dist';
 import { watchBuilder as serverApp } from '../../components/builders/server.app';
 import { WatchBuilder, MultiBuilder, BuilderState } from '@vexa/tools-builder';
 import * as terminal from '../../shared/libs/terminal';
@@ -17,6 +18,7 @@ type Builders = {
   // widgetClient: WatchBuilder;
   serverDist: WatchBuilder;
   serverApp: WatchBuilder;
+  clientDist: WatchBuilder;
 };
 
 type Builder = MultiBuilder<Builders>;
@@ -36,6 +38,7 @@ export class Application {
 
     this.builder = new MultiBuilder({
       serverDist: serverDist(this.config),
+      clientDist: clientDist(this.config),
       serverApp: serverApp(this.config),
     });
 
@@ -110,13 +113,15 @@ export class Application {
     const statuses = {
       serverApp: getBuildStatus(state.serverApp),
       serverDist: getBuildStatus(state.serverDist),
+      clientDist: getBuildStatus(state.clientDist),
     };
 
     console.log(`Build application: ${statuses.serverApp}`);
-    console.log(`Build widget: ${statuses.serverDist}`);
-
+    console.log(`Build widget (server): ${statuses.serverDist}`);
+    console.log(`Build widget (client): ${statuses.clientDist}`);
     // console.log('state.serverApp.compiler.stats?.hasErrors()', state.serverApp.compiler.stats?.hasErrors());
     // console.log('state.serverApp.compiler.stats?.hasErrors()', state.serverApp.compiler.err);
+    console.log(state.clientDist.compiler.stats?.toString());
 
     try {
       if (statuses.serverApp !== 'error' && statuses.serverDist !== 'error') {
