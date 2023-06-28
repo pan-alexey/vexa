@@ -1,5 +1,5 @@
 import { Configuration } from 'webpack';
-import { widgetSource, widgetBootstrap, widgetBuildServer, widgetNullEntry } from '../shared/constants';
+import { widgetBuildServer, widgetNullEntry } from '../shared/constants';
 import type { Config } from '@vexa/cli-config';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import * as path from 'path';
@@ -22,41 +22,45 @@ export default (config: Config): Configuration => {
     output: {
       publicPath: 'auto',
       libraryTarget: 'umd',
-      filename: `[name].js`,
-      chunkFilename: './chunks/[contenthash].js',
+      filename: `index.js`,
+      chunkFilename: './chunks/[id].[contenthash].js',
       path: widgetBuildServer,
     },
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.css'],
       alias: {
         '~': path.resolve('src'),
-        '~widget$': widgetSource,
       },
     },
-    // optimization: {
-    //   runtimeChunk: true,
-    //   splitChunks: {
-    //     chunks: 'async',
-    //     maxInitialRequests: Infinity,
-    //     minSize: 0,
-    //     cacheGroups: {
-    //       vendor: {
-    //         test: /[\\/]node_modules[\\/]/,
-    //         // idHint: 'vendors',
-    //         name: 'vendors',
-    //         chunks: 'async',
-    //         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //         // @ts-ignore
-    //         name(module) {
-    //           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //           // @ts-ignore
-    //           const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-    //           return `vendor/${packageName}`;
-    //         },
-    //       },
-    //     },
-    //   },
-    // },
+    optimization: {
+      runtimeChunk: false,
+      splitChunks: {
+        chunks: 'async',
+        maxInitialRequests: Infinity,
+        minSize: 0,
+        cacheGroups: {
+          vendor: {
+            priority: -10,
+            test: /[\\/]node_modules[\\/]/,
+            chunks: 'async',
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            name(module) {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+              return `vendor/${packageName}`;
+            },
+          },
+          default: {
+            priority: -20,
+            // idHint: 'vendors',
+            name: 'default',
+            chunks: 'async',
+          },
+        },
+      },
+    },
     module: {
       rules: [
         {
