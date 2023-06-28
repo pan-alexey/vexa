@@ -1,5 +1,5 @@
 import { Configuration } from 'webpack';
-import { widgetSource, widgetBootstrap, widgetBuildClient } from '../shared/constants';
+import { widgetSource, widgetBootstrap, widgetBuildClient, widgetNullEntry } from '../shared/constants';
 import type { Config } from '@vexa/cli-config';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -18,7 +18,7 @@ export default (config: Config): Configuration => {
     devtool: 'source-map',
     cache: false,
     entry: {
-      index: widgetBootstrap,
+      index: widgetNullEntry,
     },
     output: {
       uniqueName: widgetName,

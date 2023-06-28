@@ -30,6 +30,7 @@ export const download = async (url: string, output: string) =>
           reject('Error tar unzip');
         })
         .on('finish', () => {
+          console.log('finish download', output);
           resolve(output);
         });
     })

@@ -37,6 +37,6 @@ export const download = async (url: string, output: string) => new Promise((reso
 });
 
 export const downloadModule = async (url: string, output: string) => {
-  await fs.emptyDir(output);
+  // await fs.emptyDir(output);
   await download(url, output);
 }

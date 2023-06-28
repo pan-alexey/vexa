@@ -157,8 +157,10 @@ export class Application {
 
   private async processDone() {
     await fs.emptyDir(constants.widgetDist);
-    await fs.copy(constants.widgetBuild, constants.widgetDist, { overwrite: true });
+    await fs.copy(constants.widgetBuild, constants.widgetDist);
     await compress(constants.widgetBuild, path.resolve(constants.widgetDist, 'widget.tgz'));
+    // burst after compress
+    await new Promise((r) => setTimeout(r, 200));
   }
 
   public async requireApp() {

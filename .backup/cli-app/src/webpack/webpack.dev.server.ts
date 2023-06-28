@@ -37,7 +37,7 @@ export default (props: ConfigProps): WebpackConfiguration => {
     },
     output: {
       uniqueName: appName,
-      libraryTarget: 'umd',
+      libraryTarget: 'commonjs-module',
       path: props.outputPath,
       filename: 'index.js',
       clean: true,

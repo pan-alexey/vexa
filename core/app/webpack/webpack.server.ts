@@ -45,9 +45,10 @@ export default (): Configuration => {
       new ModuleFederationPlugin({
         name: appName,
         library: { type: 'commonjs-module' },
+        remotes: {},
         shared: {
-          react: { singleton: true, eager: true },
-          'react-dom': { singleton: true, eager: true },
+          react: { singleton: true, eager: true, requiredVersion: '18.2.0' }, // to external
+          'react-dom': { singleton: true, eager: true, requiredVersion: '18.2.0' }, // to external
           moment: { singleton: true, eager: true },
         },
       }),

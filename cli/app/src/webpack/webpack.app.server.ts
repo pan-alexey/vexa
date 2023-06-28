@@ -18,7 +18,7 @@ export default (config: Config): Configuration => {
     devtool: 'source-map',
     target: 'node',
     output: {
-      libraryTarget: 'umd',
+      libraryTarget: 'commonjs-module',
       path: widgetAppDistServer,
       filename: 'index.js',
     },

@@ -107,12 +107,22 @@ export class Registry {
     const requirePath = path.resolve(downloadPath, './server');
 
     await downloadModule(remoteUrl, downloadPath);
-    const module = await loadModule(requirePath);
 
-    return {
-      requirePath,
-      module,
-    };
+    try {
+      const module = await loadModule(requirePath);
+      return {
+        requirePath,
+        module,
+      };
+    } catch (error) {
+      console.log('error loadModule', error);
+    }
+
+    throw new Error('custom error downloadWidget');
+    // return {
+    //   requirePath,
+    //   module,
+    // };
   }
 
   public getWidgetRequireCacheList(): Array<string> {
@@ -132,22 +142,20 @@ export class Registry {
 
   public async clear() {
     const requireCache = this.getWidgetRequireCacheList();
-    requireCache.forEach((requirePath) => {
-      // not clear chunks/vendor, because probably
-      // shared module federation can used chunks as dependency
-      if (requirePath.includes(widgetsPath) && !requirePath.includes('chunks')) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        delete __non_webpack_require__.cache[requirePath];
-      }
-    });
-
+    // requireCache.forEach((requirePath) => {
+    //   // not clear chunks/vendor, because probably
+    //   // shared module federation can used chunks as dependency
+    //   if (requirePath.includes(widgetsPath) && !requirePath.includes('chunks')) {
+    //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //     // @ts-ignore
+    //     delete __non_webpack_require__.cache[requirePath];
+    //   }
+    // });
     // Object.keys(this.moduleMap).forEach((key) => {
     //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //   // @ts-ignore
     //   delete __non_webpack_require__.cache[this.moduleMap[key].requirePath];
     // });
-
-    this.moduleMap = {};
+    // this.moduleMap = {};
   }
 }

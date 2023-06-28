@@ -1,5 +1,5 @@
 import { Configuration } from 'webpack';
-import { widgetSource, widgetBootstrap, widgetBuildServer } from '../shared/constants';
+import { widgetSource, widgetBootstrap, widgetBuildServer, widgetNullEntry } from '../shared/constants';
 import type { Config } from '@vexa/cli-config';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import * as path from 'path';
@@ -15,12 +15,13 @@ export default (config: Config): Configuration => {
     target: 'node',
     mode: 'development',
     devtool: 'source-map',
-    entry: {
-      index: widgetBootstrap,
-    },
+    // entry: {
+    //   index: widgetBootstrap,
+    // },
+    entry: widgetNullEntry,
     output: {
       publicPath: 'auto',
-      libraryTarget: 'commonjs-module',
+      libraryTarget: 'umd',
       filename: `[name].js`,
       chunkFilename: './chunks/[contenthash].js',
       path: widgetBuildServer,
@@ -32,30 +33,30 @@ export default (config: Config): Configuration => {
         '~widget$': widgetSource,
       },
     },
-    optimization: {
-      runtimeChunk: true,
-      splitChunks: {
-        chunks: 'async',
-        maxInitialRequests: Infinity,
-        minSize: 0,
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            // idHint: 'vendors',
-            name: 'vendors',
-            chunks: 'async',
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            name(module) {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-              return `vendor/${packageName}`;
-            },
-          },
-        },
-      },
-    },
+    // optimization: {
+    //   runtimeChunk: true,
+    //   splitChunks: {
+    //     chunks: 'async',
+    //     maxInitialRequests: Infinity,
+    //     minSize: 0,
+    //     cacheGroups: {
+    //       vendor: {
+    //         test: /[\\/]node_modules[\\/]/,
+    //         // idHint: 'vendors',
+    //         name: 'vendors',
+    //         chunks: 'async',
+    //         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //         // @ts-ignore
+    //         name(module) {
+    //           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //           // @ts-ignore
+    //           const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+    //           return `vendor/${packageName}`;
+    //         },
+    //       },
+    //     },
+    //   },
+    // },
     module: {
       rules: [
         {
@@ -88,9 +89,11 @@ export default (config: Config): Configuration => {
       new CleanWebpackPlugin(),
       new ModuleFederationPlugin({
         name: widgetName,
-        library: { type: 'umd' },
+        library: { type: 'commonjs-module' },
+        // library: { type: 'commonjs-module' },
         filename: 'module.js',
         exposes: { widget: ['./src/index'] },
+        remotes: {},
         shared: {
           react: { singleton: true }, // eager: true
           'react-dom': { singleton: true },

@@ -2,20 +2,18 @@
 import path from 'path';
 import fs from 'fs-extra';
 
-export const isJS = (file: string) => /\.js(\?[^.]+)?$/.test(file);
-
-export const findChunksScripts = async (containerPath: string) => {
-  const list = await fs.readdir(containerPath);
-  return list.filter(isJS);
-};
-
 export const loadModule = async (containerPath: string): Promise<unknown> => {
+  const modulePath = path.resolve(containerPath, 'module.js');
+
   // @ts-ignore
   await __webpack_init_sharing__('default');
 
-  const modulePath = path.resolve(containerPath, 'module.js');
   // @ts-ignore
   const container = __non_webpack_require__(modulePath);
+  if (!container) {
+    const file = await fs.readFileSync(modulePath);
+    console.log('file', file.toString());
+  }
 
   try {
     // @ts-ignore
