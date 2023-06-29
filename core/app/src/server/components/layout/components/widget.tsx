@@ -19,7 +19,7 @@ export const makeWidget = ({
 
   return (
     <Context>
-      <Element props={props} hooks={context.hooks} slots={slots} />
+      <Element props={props} hooks={context.hooks} slots={elementSlots} />
     </Context>
   );
 };

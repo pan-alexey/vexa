@@ -19,6 +19,7 @@ const Component: React.FC<ComponentProps> = ({ data, children, contexts }) => {
     // throw new Error('Custom error');
   }
 
+  console.log(1);
   return (
     <div className={styles.root}>
       <div>Widget #2.0.0</div>

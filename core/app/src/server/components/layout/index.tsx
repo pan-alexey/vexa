@@ -1,12 +1,13 @@
 import React from 'react';
-import type { Registry, ModuleContext } from '../registry';
-import { makeRootContext, makeContext } from './context';
-// import { getAllWidgetNames } from './components/state';
+import type { Registry, ModuleContext, RegistryComponent } from '../registry';
+import { makeRootContext, makeContext } from './components/context';
+import { getModuleNames } from './components/state';
 import { renderComponent } from '../../libs/render';
 import { getUniqueId } from '../../libs/utils/uniqid';
 import { promiseAllKeys } from '../../../common/utils/promises';
-import { makeWidget } from './widget';
-import type { Context } from './context';
+import { makeWidget } from './components/widget';
+import type { Context } from './components/context';
+import { resolvePublic } from './helpers/resolvePublic';
 
 export interface Widget {
   name: string;
@@ -20,12 +21,60 @@ export interface LayoutProps {
 
 export class Layout {
   private registry: Registry;
+
   constructor(props: LayoutProps) {
     this.registry = props.registry;
   }
 
-  public async renderHead(state: unknown, ignoreWidgets: Array<string> = []) {
-    return '';
+  // For remote modules module;
+  public async renderHead({
+    state,
+    ignoreModuleNames = [],
+    publicTemplate,
+  }: {
+    state: unknown;
+    ignoreModuleNames?: Array<string>;
+    publicTemplate: string;
+  }): Promise<{
+    js: Array<string>;
+    css: Record<string, string>;
+  }> {
+    const { layout } = state as { layout: Widget[] };
+    const names = getModuleNames(layout);
+
+    const promises: Array<Promise<RegistryComponent | null>> = [];
+    names.forEach((name) => {
+      promises.push(this.registry.getWidget(name));
+    });
+    const results = await Promise.all(promises);
+
+    const assetsJs: Array<string> = [];
+    const assetCss: Record<string, string> = {};
+
+    results.forEach((module) => {
+      if (module === null) {
+        return;
+      }
+      const { name, assets } = module;
+      // need to dev
+      if (ignoreModuleNames.includes(name)) {
+        return;
+      }
+
+      console.log('ignoreModuleNames', ignoreModuleNames, name, ignoreModuleNames.includes(name));
+      // collect js
+      assetsJs.push(resolvePublic(publicTemplate, { name, asset: assets.jsModule }));
+
+      Object.keys(assets.css).forEach((key) => {
+        const url = resolvePublic(publicTemplate, { name, asset: key });
+        assetCss[url] = assets.css[key];
+      });
+    });
+
+    return {
+      js: assetsJs,
+      css: assetCss,
+    };
   }
 
   public async render(state: unknown): Promise<string> {

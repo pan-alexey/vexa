@@ -1,8 +1,10 @@
 import { Configuration } from 'webpack';
-import { widgetSource, widgetBootstrap, widgetBuildClient, widgetNullEntry } from '../shared/constants';
+import { widgetSource, widgetBuildClient, widgetBuildServer, widgetBootstrap } from '../shared/constants';
 import type { Config } from '@vexa/cli-config';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { normalizeName } from './helpers/normalizeName';
+import { ManifestAssetsPluginDist } from './plugins/manifestPluginDist';
 import * as path from 'path';
 import webpack from 'webpack';
 const { ModuleFederationPlugin } = webpack.container;
@@ -10,15 +12,15 @@ const { ModuleFederationPlugin } = webpack.container;
 export default (config: Config): Configuration => {
   const widgetName = config.name;
   // const normalize name
-  const normalizeName = 'widget'; //config.widgetName;
+  const normalName = normalizeName(widgetName); 
 
   const webpackConfig: Configuration = {
     target: 'web',
-    mode: 'development',
-    devtool: 'source-map',
+    mode: 'production',
+    devtool: 'hidden-source-map',
     cache: false,
     entry: {
-      index: widgetNullEntry,
+      index: widgetBootstrap,
     },
     output: {
       uniqueName: widgetName,
@@ -74,14 +76,17 @@ export default (config: Config): Configuration => {
           use: [
             {
               loader: MiniCssExtractPlugin.loader,
+              options: {
+                esModule: false,
+              }
             },
             {
               loader: 'css-loader',
               options: {
+                sourceMap: false,
+                importLoaders: 1,
                 modules: {
-                  exportOnlyLocals: true,
-                  auto: true,
-                  localIdentName: `${normalizeName}_[contenthash]`,
+                  localIdentName: `${normalName}_[contenthash]`,
                 },
               },
             },
@@ -90,6 +95,12 @@ export default (config: Config): Configuration => {
       ],
     },
     plugins: [
+      new MiniCssExtractPlugin({
+        linkType: 'text/css',
+      }),
+      new ManifestAssetsPluginDist({
+        output: path.resolve(widgetBuildServer, 'manifest.json')
+      }),
       new CleanWebpackPlugin(),
       new ModuleFederationPlugin({
         name: widgetName,
@@ -104,7 +115,6 @@ export default (config: Config): Configuration => {
       new webpack.DefinePlugin({
         __name__: JSON.stringify(widgetName),
       }),
-      new MiniCssExtractPlugin(),
     ],
   };
 

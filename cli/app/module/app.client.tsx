@@ -11,23 +11,19 @@ export const run = async () => {
     return;
   }
 
-  const App = new Application();
-
-  // @ts-ignore
-  App.registerDevWidget(__name__ as string, widget);
-
-  const state = (window as any).__state__;
-
-  const layout = App.getLayout(state.layout);
-
-  if (container.hasChildNodes()) {
-    console.log('hydrate');
-    hydrateRoot(container, layout);
-  } else {
-    console.log('render');
-    const root = createRoot(container);
-    root.render(layout);
-  }
+  // const App = new Application();
+  // // @ts-ignore
+  // App.registerDevWidget(__name__ as string, widget);
+  // const state = (window as any).__state__;
+  // const layout = App.getLayout(state.layout);
+  // if (container.hasChildNodes()) {
+  //   console.log('hydrate');
+  //   hydrateRoot(container, layout);
+  // } else {
+  //   console.log('render');
+  //   const root = createRoot(container);
+  //   root.render(layout);
+  // }
 };
 
 run();

@@ -2,8 +2,8 @@
 import path from 'path';
 import fs from 'fs-extra';
 
-export const loadModule = async (containerPath: string): Promise<unknown> => {
-  const modulePath = path.resolve(containerPath, 'module.js');
+export const loadModule = async (serverModulePath: string): Promise<unknown> => {
+  const modulePath = path.resolve(serverModulePath, 'module.js');
 
   // @ts-ignore
   await __webpack_init_sharing__('default');

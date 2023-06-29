@@ -4,6 +4,7 @@ import { AddressInfo } from 'net';
 import type { Config } from '@vexa/cli-config';
 import webpack from 'webpack';
 import { renderHtml } from './render';
+import type { Application } from '@vexa/core-app';
 
 import express, { Express, Request, Response, NextFunction } from 'express';
 import { createHotServer } from 'webpack-hmr-server';
@@ -17,13 +18,6 @@ interface Manifest {
 
 export interface DevServerProps {
   config: Config;
-}
-
-export interface Application {
-  renderBody: (state: unknown) => Promise<string>;
-  registry: {
-    clear: () => void;
-  };
 }
 
 export class DevServer {
@@ -69,7 +63,7 @@ export class DevServer {
       this.ready(false);
       // Дожидаемся предыдущих рендеров (т.к там могут быть lazy load компоненты)
       // Маловеротяно что рендеринг будет более 300ms
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 200));
       this.application.registry.clear();
       this.ready(true);
 
@@ -77,9 +71,13 @@ export class DevServer {
         url: req.url,
       });
 
-      const html = await renderHtml(this.application, state);
-      // const html = this.application?.renderWidget('widget.cms.navbar@1-dev');
-
+      const html = await renderHtml({
+        app: this.application,
+        state,
+        publicTemplate: `http://127.0.0.1:${this.getPort()}/_assets_/{moduleName}/client/{asset}`,
+        ignoreModuleNames: [this.config.name],
+        moduleName: this.config.name,
+      });
       return res.end(html);
     });
   }

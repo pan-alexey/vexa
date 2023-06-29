@@ -1,6 +1,7 @@
 .root {
   display: block;
   border: 1px solid #ccc;
+  background: #ccc;
 }
 
 .children {

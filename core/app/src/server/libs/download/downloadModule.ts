@@ -30,14 +30,13 @@ export const download = async (url: string, output: string) =>
           reject('Error tar unzip');
         })
         .on('finish', () => {
-          console.log('finish download', output);
-          resolve(output);
+          setTimeout(() => {
+            resolve(output);
+          }, 50);
         });
-    })
-      .on('error', () => {
-        reject(`Error ${uri.protocol} request to ${url}`);
-      })
-      .end();
+    }).on('error', () => {
+      reject(`Error ${uri.protocol} request to ${url}`);
+    });
   });
 
 export const downloadModule = async (url: string, output: string) => {

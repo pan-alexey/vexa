@@ -4,6 +4,7 @@ import { widgetsPath } from '../../constants';
 import { getMeta } from '../../../common/component/getMeta';
 import { downloadModule } from '../../libs/download/downloadModule';
 import { loadModule } from '../../libs/module/loadModule';
+import { loadManifest } from '../../libs/module/loadManifest';
 import type { ComponentMeta } from '../../../common/types';
 import { resolveTemplateUrls } from './helpers';
 
@@ -13,7 +14,6 @@ export interface ModuleContext {
 }
 
 export type ModuleWidget = React.ElementType;
-
 export type ModuleType = React.ElementType | ModuleContext;
 
 export interface RegistryComponent {
@@ -22,8 +22,8 @@ export interface RegistryComponent {
   requirePath: string;
   meta: ComponentMeta;
   assets: {
+    jsModule: string;
     css: Record<string, string>;
-    js: Record<string, string>;
   };
 }
 
@@ -49,9 +49,11 @@ export class Registry {
 
   public async getWidget(widgetName: string): Promise<RegistryComponent | null> {
     if (this.moduleMap[widgetName]) {
+      console.log('getWidget: cached', widgetName);
       return this.moduleMap[widgetName];
     }
 
+    console.log('getWidget: no cache', widgetName);
     await this.loadWidget(widgetName);
     const widget = this.moduleMap[widgetName];
     return widget ? widget : null;
@@ -78,16 +80,13 @@ export class Registry {
     try {
       const remoteUrl = resolveTemplateUrls(remoteUrlTemplate, widgetName);
 
-      const { module, requirePath } = await this.downloadWidget(widgetName, remoteUrl);
+      const { module, requirePath, assets } = await this.downloadWidget(widgetName, remoteUrl);
       const widget: RegistryComponent = {
         name: widgetName,
         module: module as ModuleType,
         requirePath,
         meta,
-        assets: {
-          css: {},
-          js: {},
-        },
+        assets,
       };
       this.injectWidget(widget);
       return true;
@@ -102,27 +101,32 @@ export class Registry {
   private async downloadWidget(
     widgetName: string,
     remoteUrl: string,
-  ): Promise<{ module: unknown; requirePath: string }> {
+  ): Promise<{
+    module: unknown;
+    requirePath: string;
+    assets: {
+      jsModule: string;
+      css: Record<string, string>;
+    };
+  }> {
     const downloadPath = path.resolve(widgetsPath, widgetName);
     const requirePath = path.resolve(downloadPath, './server');
-
     await downloadModule(remoteUrl, downloadPath);
 
     try {
       const module = await loadModule(requirePath);
+      const assets = await loadManifest(requirePath);
+
       return {
         requirePath,
         module,
+        assets,
       };
     } catch (error) {
       console.log('error loadModule', error);
     }
 
     throw new Error('custom error downloadWidget');
-    // return {
-    //   requirePath,
-    //   module,
-    // };
   }
 
   public getWidgetRequireCacheList(): Array<string> {
@@ -140,6 +144,7 @@ export class Registry {
     return result;
   }
 
+  // !!! Warning dev only !!!
   public async clear() {
     const requireCache = this.getWidgetRequireCacheList();
     requireCache.forEach((requirePath) => {

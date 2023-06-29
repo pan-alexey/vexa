@@ -1,6 +1,6 @@
 import React from 'react';
-import { RootContext } from '../../../common/context/index';
-import type { ModuleContext } from '../registry';
+import { RootContext } from '../../../../common/context/index';
+import type { ModuleContext } from '../../registry';
 
 export type Context = {
   provider: React.FC<{ children: React.ReactNode }>;

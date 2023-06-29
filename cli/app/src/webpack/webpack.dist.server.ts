@@ -1,7 +1,8 @@
 import { Configuration } from 'webpack';
-import { widgetBuildServer, widgetNullEntry } from '../shared/constants';
+import { widgetSource, widgetBuildServer, widgetNullEntry } from '../shared/constants';
 import type { Config } from '@vexa/cli-config';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import { normalizeName } from './helpers/normalizeName';
 import * as path from 'path';
 import webpack from 'webpack';
 const { ModuleFederationPlugin } = webpack.container;
@@ -9,7 +10,7 @@ const { ModuleFederationPlugin } = webpack.container;
 export default (config: Config): Configuration => {
   const widgetName = config.name;
   // const normalize name
-  const normalizeName = 'widget'; //config.widgetName;
+  const normalName = normalizeName(widgetName); //config.widgetName;
 
   const webpackConfig: Configuration = {
     target: 'node',
@@ -30,6 +31,7 @@ export default (config: Config): Configuration => {
       extensions: ['.js', '.ts', '.tsx', '.css'],
       alias: {
         '~': path.resolve('src'),
+        '~widget$': widgetSource,
       },
     },
     optimization: {
@@ -81,7 +83,7 @@ export default (config: Config): Configuration => {
                 modules: {
                   exportOnlyLocals: true,
                   auto: true,
-                  localIdentName: `${normalizeName}_[contenthash]`,
+                  localIdentName: `${normalName}_[contenthash]`,
                 },
               },
             },
@@ -94,7 +96,6 @@ export default (config: Config): Configuration => {
       new ModuleFederationPlugin({
         name: widgetName,
         library: { type: 'commonjs-module' },
-        // library: { type: 'commonjs-module' },
         filename: 'module.js',
         exposes: { widget: ['./src/index'] },
         remotes: {},

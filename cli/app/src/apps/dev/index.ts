@@ -9,8 +9,9 @@ import { WatchBuilder, MultiBuilder, BuilderState } from '@vexa/tools-builder';
 import * as terminal from '../../shared/libs/terminal';
 import { compress } from '../../shared/libs/compress';
 import { getBuildStatus } from '../../shared/helpers/buildStatus';
-import { DevServer, Application as DevServerApp } from '../../components/devServer';
+import { DevServer } from '../../components/devServer';
 import type { Config } from '@vexa/cli-config';
+import type { Application as CoreApp } from '@vexa/core-app';
 
 type Builders = {
   // appClient: WatchBuilder;
@@ -60,6 +61,7 @@ export class Application {
   }
 
   private async runServer() {
+    this.server.public(path.resolve(process.cwd(), './node_modules/.vexa.widgets'), `/_assets_`); // for share assets
     this.server.public(constants.widgetDist, `/${constants.widgetStaticPath}`);
     this.server.registerRouter();
     await this.server.listen();
@@ -119,8 +121,7 @@ export class Application {
     console.log(`Build application: ${statuses.serverApp}`);
     console.log(`Build widget (server): ${statuses.serverDist}`);
     console.log(`Build widget (client): ${statuses.clientDist}`);
-    // console.log('state.serverApp.compiler.stats?.hasErrors()', state.serverApp.compiler.stats?.hasErrors());
-    // console.log('state.serverApp.compiler.stats?.hasErrors()', state.serverApp.compiler.err);
+
     console.log(state.clientDist.compiler.stats?.toString());
 
     try {
@@ -147,7 +148,7 @@ export class Application {
 
   private async registerApp() {
     try {
-      const app = (await this.requireApp()) as DevServerApp;
+      const app = (await this.requireApp()) as CoreApp;
       this.server.injectApp(app);
     } catch (error) {
       console.log('registerApp:error', error);
@@ -156,12 +157,10 @@ export class Application {
   }
 
   private async processDone() {
-    await fs.emptyDir(constants.widgetDist);
-    await fs.copy(constants.widgetBuild, constants.widgetDist);
-    await new Promise((r) => setTimeout(r, 100));
+    await fs.mkdirp(constants.widgetDist);
+    // await fs.emptyDir(constants.widgetDist);
+    await fs.copy(constants.widgetBuild, constants.widgetDist, { recursive: true, overwrite: true });
     await compress(constants.widgetBuild, path.resolve(constants.widgetDist, 'widget.tgz'));
-    // burst after compress
-    await new Promise((r) => setTimeout(r, 100));
   }
 
   public async requireApp() {
