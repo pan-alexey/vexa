@@ -32,6 +32,10 @@ export class Application {
     return await this.layout.renderHead(props);
   }
 
+  public async renderState(props: { state: unknown; publicTemplate: string }) {
+    return this.layout.renderState(props);
+  }
+
   public async renderBody(state: unknown): Promise<string> {
     return await this.layout.render(state);
   }

@@ -47,6 +47,10 @@ export class WatchBuilder extends Builder {
     return new Promise((resolve) => {
       const { status } = this.getState();
       const callback = () => {
+        if (!this.compiler.watching) {
+          return;
+        }
+
         this.compiler.watching.close(() => {
           this.closeHandler();
           resolve(this.getState());

@@ -1,32 +1,26 @@
 import React from 'react';
-import { registry } from './base';
+import { createRoot, hydrateRoot } from 'react-dom/client';
+import { Test } from './components/Test';
+import { TestFn } from './components/TestFn';
 
-export type State = unknown;
+export const App = async (Widget: React.ElementType) => {
+  TestFn()
+  const container = document.getElementById('app');
+  if (container) {
+    const root = createRoot(container);
 
-// В качестве параметров принимает __state__
+    if (Widget) {
+      root.render(<Widget />);
+      return;
+    }
 
-export const App: React.FC = () => {
-  const Widget1 = registry.get('widget1');
-  // const Widget2 = registry.get('widget2');
-  // const Widget3 = registry.get('widget3');
+    root.render(<Test />);
+  }
 
-  return (
-    <div data-name="app">
-      <div>
-        <Widget1 />
-      </div>
-      {/* <br />
-      <div>
-        <Widget1>
-          <Widget2>
-            <Widget3>
-              <Widget1 />
-            </Widget3>
-          </Widget2>
-        </Widget1>
-      </div> */}
-    </div>
-  );
+  // if (container.hasChildNodes()) {
+  //   hydrateRoot(container, <React.Fragment>{Layout}</React.Fragment>);
+  // } else {
+  //   const root = createRoot(container);
+  //   root.render(<React.Fragment>{Layout}</React.Fragment>);
+  // }
 };
-
-export default App;

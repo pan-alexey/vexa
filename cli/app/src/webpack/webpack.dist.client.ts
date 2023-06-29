@@ -1,5 +1,5 @@
 import { Configuration } from 'webpack';
-import { widgetSource, widgetBuildClient, widgetBuildServer, widgetBootstrap } from '../shared/constants';
+import { widgetSource, widgetBuildClient, widgetBuildServer, widgetNullEntry } from '../shared/constants';
 import type { Config } from '@vexa/cli-config';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -12,7 +12,7 @@ const { ModuleFederationPlugin } = webpack.container;
 export default (config: Config): Configuration => {
   const widgetName = config.name;
   // const normalize name
-  const normalName = normalizeName(widgetName); 
+  const normalName = normalizeName(widgetName);
 
   const webpackConfig: Configuration = {
     target: 'web',
@@ -20,7 +20,7 @@ export default (config: Config): Configuration => {
     devtool: 'hidden-source-map',
     cache: false,
     entry: {
-      index: widgetBootstrap,
+      index: widgetNullEntry,
     },
     output: {
       uniqueName: widgetName,
@@ -78,7 +78,7 @@ export default (config: Config): Configuration => {
               loader: MiniCssExtractPlugin.loader,
               options: {
                 esModule: false,
-              }
+              },
             },
             {
               loader: 'css-loader',

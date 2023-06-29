@@ -23,6 +23,7 @@ export default (config: Config): Configuration => {
       filename: 'index.js',
     },
     externals: [
+      // Должен билдится (@vexa/core-app - не должен быть пакетом)
       // disable build @vexa/core-app for monorepo
       function ({ request }, callback) {
         if (isPackage(request) && request === '@vexa/core-app') {
@@ -53,6 +54,7 @@ export default (config: Config): Configuration => {
         },
       ],
     },
+    // Добавить MF конфиг
     plugins: [
       new CleanWebpackPlugin(),
       new webpack.DefinePlugin({

@@ -5,6 +5,7 @@ export interface RenderProps {
   state: unknown;
   publicTemplate: string;
   moduleName: string;
+  hostApp: string;
   ignoreModuleNames: Array<string>;
 }
 export const renderHtml = async ({
@@ -13,6 +14,7 @@ export const renderHtml = async ({
   publicTemplate,
   ignoreModuleNames,
   moduleName,
+  hostApp
 }: RenderProps): Promise<string> => {
   // application assets // js // css
 
@@ -33,6 +35,11 @@ export const renderHtml = async ({
   // Render Body
   const body = await app.renderBody(state);
 
+  const clientState = await app.renderState({
+    state,
+    publicTemplate,
+  });
+
   const html = `<!DOCTYPE html>
   <html>
   <head>
@@ -42,9 +49,12 @@ export const renderHtml = async ({
       <title>${moduleName}</title>
       ${layoutScript.join('')}
       ${layoutStyles.join('')}
+      <script defer src="${hostApp}"></script>
   </head>
   <body>
   <div id="app">${body}</div>
+
+  <script>${clientState}</script>
   </body>
   </html>
   `;

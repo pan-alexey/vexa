@@ -26,6 +26,15 @@ export class Layout {
     this.registry = props.registry;
   }
 
+  public renderState({ state, publicTemplate }: { publicTemplate: string; state: unknown }): string {
+    const __state__ = {
+      state,
+      publicTemplate,
+    };
+
+    return 'window.__APP_STATE__ = ' + JSON.stringify(__state__);
+  }
+
   // For remote modules module;
   public async renderHead({
     state,

@@ -75,6 +75,7 @@ export class DevServer {
         app: this.application,
         state,
         publicTemplate: `http://127.0.0.1:${this.getPort()}/_assets_/{moduleName}/client/{asset}`,
+        hostApp: `http://127.0.0.1:${this.getPort()}/_host_/index.js`,
         ignoreModuleNames: [this.config.name],
         moduleName: this.config.name,
       });
@@ -120,5 +121,9 @@ export class DevServer {
 
   public injectApp(application: Application | null) {
     this.application = application;
+  }
+
+  public sendHmr(stats: webpack.Stats) {
+    this.hotServer.reloadModules({ client: stats });
   }
 }

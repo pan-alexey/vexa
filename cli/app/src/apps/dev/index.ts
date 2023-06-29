@@ -3,8 +3,9 @@ import fs from 'fs-extra';
 import { throttle } from 'lodash';
 import * as constants from '../../shared/constants';
 import { watchBuilder as serverDist } from '../../components/builders/server.dist';
-import { watchBuilder as clientDist } from '../../components/builders/client.dist';
 import { watchBuilder as serverApp } from '../../components/builders/server.app';
+import { watchBuilder as clientDist } from '../../components/builders/client.dist';
+import { watchBuilder as clientApp } from '../../components/builders/client.app';
 import { WatchBuilder, MultiBuilder, BuilderState } from '@vexa/tools-builder';
 import * as terminal from '../../shared/libs/terminal';
 import { compress } from '../../shared/libs/compress';
@@ -14,12 +15,10 @@ import type { Config } from '@vexa/cli-config';
 import type { Application as CoreApp } from '@vexa/core-app';
 
 type Builders = {
-  // appClient: WatchBuilder;
-  // appServer: WatchBuilder;
-  // widgetClient: WatchBuilder;
   serverDist: WatchBuilder;
   serverApp: WatchBuilder;
   clientDist: WatchBuilder;
+  clientApp: WatchBuilder;
 };
 
 type Builder = MultiBuilder<Builders>;
@@ -41,6 +40,7 @@ export class Application {
       serverDist: serverDist(this.config),
       clientDist: clientDist(this.config),
       serverApp: serverApp(this.config),
+      clientApp: clientApp(this.config),
     });
 
     this.server = new DevServer({
@@ -61,6 +61,7 @@ export class Application {
   }
 
   private async runServer() {
+    this.server.public(path.resolve(process.cwd(), './node_modules/.vexa.app/client'), `/_host_`); // for share assets
     this.server.public(path.resolve(process.cwd(), './node_modules/.vexa.widgets'), `/_assets_`); // for share assets
     this.server.public(constants.widgetDist, `/${constants.widgetStaticPath}`);
     this.server.registerRouter();
@@ -105,7 +106,11 @@ export class Application {
 
   private progress(state: State) {
     terminal.clear();
-    console.log('building', state.serverApp.progress, state.serverDist.progress);
+    console.log('building:');
+    console.log(`serverApp: ${state.serverApp.progress.progress}`);
+    console.log(`serverDist: ${state.serverDist.progress.progress}`);
+    console.log(`clientApp: ${state.clientApp.progress.progress}`);
+    console.log(`serverApp: ${state.serverApp.progress.progress}`);
   }
 
   private async done(state: State) {
@@ -113,17 +118,22 @@ export class Application {
     console.log('done');
 
     const statuses = {
+      clientApp: getBuildStatus(state.clientApp),
       serverApp: getBuildStatus(state.serverApp),
       serverDist: getBuildStatus(state.serverDist),
       clientDist: getBuildStatus(state.clientDist),
     };
 
-    console.log(`Build application: ${statuses.serverApp}`);
+    console.log(`Build application (client): ${statuses.clientApp}`);
+    console.log(`Build application (server): ${statuses.serverApp}`);
     console.log(`Build widget (server): ${statuses.serverDist}`);
     console.log(`Build widget (client): ${statuses.clientDist}`);
 
-    console.log(state.clientDist.compiler.stats?.toString());
+    if (statuses.clientApp === 'error') {
+      console.log(state.clientApp.compiler.stats?.toString());
+    }
 
+    console.log('state.clientDist', state.clientDist.compiler.stats?.toString());
     try {
       if (statuses.serverApp !== 'error' && statuses.serverDist !== 'error') {
         await this.processDone();
@@ -133,15 +143,16 @@ export class Application {
           `Widget tgz allow in http://127.0.0.1:${this.server.getPort()}/${constants.widgetStaticPath}/widget.tgz`,
         );
 
+        if (state.clientApp.compiler.stats) {
+          console.log('HMR Ready');
+          this.server.sendHmr(state.clientApp.compiler.stats);
+        }
+
         this.server.ready(true);
         return;
       }
     } catch (error) {
       console.log('Error register application');
-    }
-
-    if (statuses.serverApp === 'error') {
-      console.log(state.serverApp.compiler.stats?.toString());
     }
     this.server.ready(false);
   }
