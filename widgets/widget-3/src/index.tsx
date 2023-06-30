@@ -16,10 +16,8 @@ const Component: React.FC<ComponentProps> = ({ data, slots, contexts }) => {
   if (contexts) {
     // @ts-ignore
     const useContext1 = contexts[0]();
-    console.log('useContext1', useContext1);
   }
 
-  console.log('slots', slots);
 
   return (
     <div className={styles.root}>

@@ -16,7 +16,6 @@ export type MakeContextProps = {
 
 export const makeContext = ({ name, parentContext, module, props = {} }: MakeContextProps): Context => {
   const ParentProvider = parentContext.provider;
-
   const ModuleProvider = module.Provider;
   const moduleHook = {
     name,
@@ -26,6 +25,7 @@ export const makeContext = ({ name, parentContext, module, props = {} }: MakeCon
   const hooks = [...parentContext.hooks, moduleHook];
 
   const provider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    // return <>{children}</>;
     return (
       <ParentProvider>
         <ModuleProvider props={props}>{children}</ModuleProvider>

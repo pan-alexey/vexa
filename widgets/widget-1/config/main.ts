@@ -2,10 +2,6 @@ import config from '@vexa/cli';
 import path from 'path';
 import type { Config } from '@vexa/cli';
 
-const state = {
-  layout: [],
-};
-
 export default config(async () => {
   const config: Config = {
     name: 'widget.cms.navbar@1',
@@ -18,6 +14,8 @@ export default config(async () => {
         'context.cms.main@1': 'http://127.0.0.1:8001/_static_/widget.tgz',
       },
       getState: async (params) => {
+        console.log('params', params);
+
         return {
           layout: [
             { name: 'widget.cms.navbar@1', props: { data: 'data' } },

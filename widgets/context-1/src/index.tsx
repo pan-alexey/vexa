@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, createContext } from 'react';
 
 export interface ContextInterface<ContextType> {
   useContext: () => ContextType;
@@ -11,10 +11,9 @@ export type ContextType = {
   props: unknown;
 };
 
-const Context = React.createContext<ContextType | null>(null);
+const Context = createContext<ContextType | null>(null);
 const Provider: React.FC<{ children: React.ReactNode; props?: unknown }> = ({ children, props }) => {
-  const [state, setState] = React.useState<string>('context.cms.main@10000');
-
+  const [state, setState] = useState<string>('context.cms.main@10000');
   const setValue = (newValue: string) => {
     setState(newValue);
   };

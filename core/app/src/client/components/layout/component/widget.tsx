@@ -14,8 +14,6 @@ export const makeWidget = ({
 }): React.ReactElement => {
   const Context = context.provider;
   const Element = element;
-
-  console.log('slots', slots);
   const elementSlots = slots || {};
 
   return (

@@ -25,6 +25,10 @@ export const loadWidgetModule = async (name: string): Promise<React.ElementType 
     const windowModules = (window as unknown as { __modules__: Record<string, unknown> }).__modules__ || {};
     if (windowModules[name]) {
       const container = windowModules[name] as Container;
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      await container.init(__webpack_share_scopes__.default);
       const factory = await container.get('widget');
 
       return factory().default as React.ElementType;

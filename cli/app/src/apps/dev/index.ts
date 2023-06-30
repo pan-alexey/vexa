@@ -133,7 +133,6 @@ export class Application {
       console.log(state.clientApp.compiler.stats?.toString());
     }
 
-    console.log('state.clientDist', state.clientDist.compiler.stats?.toString());
     try {
       if (statuses.serverApp !== 'error' && statuses.serverDist !== 'error') {
         await this.processDone();
@@ -151,6 +150,8 @@ export class Application {
         this.server.ready(true);
         return;
       }
+
+      console.log('Build has error. Server not ready');
     } catch (error) {
       console.log('Error register application');
     }

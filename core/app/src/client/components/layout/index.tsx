@@ -17,7 +17,6 @@ export class Layout {
   }
 
   public async make(state: unknown): Promise<React.ReactElement> {
-    console.log('layout', state);
     const { layout } = state as { layout: Widget[] };
     await this.registry.prepareWidgets(layout);
 
@@ -54,7 +53,6 @@ export class Layout {
     context: Context;
   }): React.ReactElement {
     const module = this.registry.getWidget(name);
-
     if (module === null) {
       return (
         <div data-module-name={name} style={{ display: 'none' }}>
@@ -62,7 +60,6 @@ export class Layout {
         </div>
       );
     }
-
     if (module.meta.type === 'widget') {
       const widgetSlots: Record<string, React.ReactElement> = {};
       Object.keys(slots).forEach((key) => {
@@ -76,21 +73,18 @@ export class Layout {
         slots: widgetSlots,
       });
     }
-
     if (module.meta.type === 'context') {
       const children = slots.children;
       if (children === undefined) {
         return <div data-module-name={name}>Context not render (context don't has children slots)</div>;
       }
-
-      // const newContext = makeContext({
-      //   name: module.name,
-      //   parentContext: context,
-      //   module: module.module as ModuleContext,
-      //   props: props,
-      // });
-
-      return <div>Context {module.name}</div>;
+      const newContext = makeContext({
+        name: module.name,
+        parentContext: context,
+        module: module.module as ModuleContext,
+        props: props,
+      });
+      return this.makeWidgetList(children, newContext);
     }
 
     return <div>Module {name} not render (unknown module type)</div>;

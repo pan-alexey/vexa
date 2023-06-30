@@ -108,8 +108,9 @@ export default (config: Config): Configuration => {
         filename: 'module.js',
         exposes: { widget: ['./src/index'] }, //
         shared: {
-          react: { singleton: true }, // eager: true
-          'react-dom': { singleton: true },
+          react: { singleton: true, requiredVersion: '18.2.0' }, // eager: true
+          'react-dom': { singleton: true, requiredVersion: '18.2.0' },
+          moment: { singleton: true },
         },
       }),
       new webpack.DefinePlugin({

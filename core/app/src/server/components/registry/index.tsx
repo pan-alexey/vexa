@@ -57,9 +57,7 @@ export class Registry {
       return this.loadWidget(name);
     });
 
-    const re = await Promise.all(promises);
-
-    console.log('re', re);
+    await Promise.all(promises);
   }
 
   public async loadWidget(widgetName: string): Promise<boolean> {
