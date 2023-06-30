@@ -6,16 +6,20 @@ interface ComponentProps {
   contexts: unknown[];
   data?: unknown;
   children?: React.ReactNode;
+
+  slots: Record<string, React.ReactNode>
 }
 const name = 'lazy';
 const LazyComponent = React.lazy(() => import('./components/' + name));
 // 2sd
-const Component: React.FC<ComponentProps> = ({ data, children, contexts }) => {
+const Component: React.FC<ComponentProps> = ({ data, slots, contexts }) => {
   if (contexts) {
     // @ts-ignore
     const useContext1 = contexts[0]();
     console.log('useContext1', useContext1);
   }
+
+  console.log('slots', slots);
 
   return (
     <div className={styles.root}>
@@ -28,7 +32,7 @@ const Component: React.FC<ComponentProps> = ({ data, children, contexts }) => {
           <LazyComponent />
         </React.Suspense>
       </div>
-      <div data-name="children" className={styles.children}>{children}</div>
+      <div data-name="children" className={styles.children}></div>
       
     </div>
   );

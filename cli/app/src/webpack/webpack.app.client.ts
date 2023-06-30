@@ -3,12 +3,14 @@ import * as path from 'path';
 import type { Config } from '@vexa/cli-config';
 import { widgetSource, widgetAppClient, widgetAppDistClient } from '../shared/constants';
 import webpack from 'webpack';
+import { normalizeName } from './helpers/normalizeName';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 const { ModuleFederationPlugin } = webpack.container;
 
 export default (config: Config): Configuration => {
   const appName = 'application';
   const widgetName = config.name;
+  const normalName = normalizeName(widgetName); //config.widgetName;
 
   const webpackConfig: Configuration = {
     entry: ['webpack-hmr-server/client.js', widgetAppClient],
@@ -61,7 +63,7 @@ export default (config: Config): Configuration => {
                 sourceMap: false,
                 importLoaders: 1,
                 modules: {
-                  localIdentName: `${appName}_[contenthash]`,
+                  localIdentName: `${normalName}_[contenthash]`, // app client предназначен для билда виджета
                 },
               },
             },

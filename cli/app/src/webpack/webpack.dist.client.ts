@@ -104,9 +104,9 @@ export default (config: Config): Configuration => {
       new CleanWebpackPlugin(),
       new ModuleFederationPlugin({
         name: widgetName,
-        library: { type: 'window', name: ['widgets', widgetName] },
+        library: { type: 'window', name: ['__modules__', widgetName] },
         filename: 'module.js',
-        exposes: { widget: ['./src/index'] },
+        exposes: { widget: ['./src/index'] }, //
         shared: {
           react: { singleton: true }, // eager: true
           'react-dom': { singleton: true },

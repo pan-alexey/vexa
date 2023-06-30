@@ -6,16 +6,13 @@ import { widgetStaticPath } from '../src/shared/constants/server';
 export const getApplication = (config: Config) => {
   const widgetHttpPort = config.debug.httpPort;
 
-  const application = new Application({
-    remoteUrls: config.debug.remotes,
-  });
-
-  // Устанавливаем настройки для виджета
-
+  // Make remoteUrls
   const widgetHttpPath = `http://127.0.0.1:${widgetHttpPort}/${widgetStaticPath}/widget.tgz`;
-  application.registry.setupRemoteWidgetUrl({
-    name: config.name,
-    staticPath: widgetHttpPath,
+  const remoteUrls = config.debug.remotes;
+  remoteUrls[config.name] = widgetHttpPath;
+
+  const application = new Application({
+    remoteUrls,
   });
 
   return application;

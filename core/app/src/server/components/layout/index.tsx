@@ -1,19 +1,14 @@
 import React from 'react';
 import type { Registry, ModuleContext, RegistryComponent } from '../registry';
 import { makeRootContext, makeContext } from './components/context';
-import { getModuleNames } from './components/state';
+import { getModuleNames } from '../../../common/component/state';
+import type { Widget } from '../../../common/types';
 import { renderComponent } from '../../libs/render';
 import { getUniqueId } from '../../libs/utils/uniqid';
 import { promiseAllKeys } from '../../../common/utils/promises';
 import { makeWidget } from './components/widget';
 import type { Context } from './components/context';
 import { resolvePublic } from './helpers/resolvePublic';
-
-export interface Widget {
-  name: string;
-  props: unknown;
-  slots?: Record<string, Widget[]>;
-}
 
 export interface LayoutProps {
   registry: Registry;
@@ -26,10 +21,19 @@ export class Layout {
     this.registry = props.registry;
   }
 
-  public renderState({ state, publicTemplate }: { publicTemplate: string; state: unknown }): string {
+  public renderState({
+    state,
+    publicTemplate,
+    devModuleNames = [],
+  }: {
+    publicTemplate: string;
+    state: unknown;
+    devModuleNames?: Array<string>;
+  }): string {
     const __state__ = {
       state,
       publicTemplate,
+      devModuleNames,
     };
 
     return 'window.__APP_STATE__ = ' + JSON.stringify(__state__);
@@ -38,19 +42,21 @@ export class Layout {
   // For remote modules module;
   public async renderHead({
     state,
-    ignoreModuleNames = [],
+    devModuleNames = [],
     publicTemplate,
   }: {
     state: unknown;
-    ignoreModuleNames?: Array<string>;
+    devModuleNames?: Array<string>;
     publicTemplate: string;
   }): Promise<{
     js: Array<string>;
     css: Record<string, string>;
   }> {
     const { layout } = state as { layout: Widget[] };
-    const names = getModuleNames(layout);
+    // prepare widgets
+    await this.registry.prepareWidgets(layout); // ?? todo return names
 
+    const names = getModuleNames(layout);
     const promises: Array<Promise<RegistryComponent | null>> = [];
     names.forEach((name) => {
       promises.push(this.registry.getWidget(name));
@@ -65,19 +71,17 @@ export class Layout {
         return;
       }
       const { name, assets } = module;
-      // need to dev
-      if (ignoreModuleNames.includes(name)) {
-        return;
-      }
-
-      console.log('ignoreModuleNames', ignoreModuleNames, name, ignoreModuleNames.includes(name));
-      // collect js
-      assetsJs.push(resolvePublic(publicTemplate, { name, asset: assets.jsModule }));
 
       Object.keys(assets.css).forEach((key) => {
         const url = resolvePublic(publicTemplate, { name, asset: key });
         assetCss[url] = assets.css[key];
       });
+
+      // Need to dev ()
+      // Для дев режима мы исключаем именно js код виджета
+      if (!devModuleNames.includes(name)) {
+        assetsJs.push(resolvePublic(publicTemplate, { name, asset: assets.jsModule }));
+      }
     });
 
     return {
@@ -88,6 +92,8 @@ export class Layout {
 
   public async render(state: unknown): Promise<string> {
     const { layout } = state as { layout: Widget[] };
+    // prepare widgets
+    await this.registry.prepareWidgets(layout);
 
     // Start render
     const rootContext: Context = makeRootContext();

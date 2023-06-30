@@ -26,7 +26,7 @@ export default config(async () => {
             {
               name: 'widget.cms.navbar@1',
               props: {
-                props: 'props1',
+                props: 'props: widget.cms.navbar@1',
               },
               slots: {
                 slots1: [

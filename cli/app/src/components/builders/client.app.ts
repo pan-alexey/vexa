@@ -10,10 +10,5 @@ export const watchBuilder = (config: Config): WatchBuilder => {
 
 export const baseBuilder = (config: Config): BaseBuilder => {
   const compiler = webpack(getWebpackConfig(config));
-
-  new webpack.EntryPlugin(compiler.context, 'webpack-hmr-server/client.js', {
-    name: undefined,
-  }).apply(compiler);
-
   return new BaseBuilder(compiler);
 };

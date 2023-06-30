@@ -76,7 +76,7 @@ export class DevServer {
         state,
         publicTemplate: `http://127.0.0.1:${this.getPort()}/_assets_/{moduleName}/client/{asset}`,
         hostApp: `http://127.0.0.1:${this.getPort()}/_host_/index.js`,
-        ignoreModuleNames: [this.config.name],
+        devModuleNames: [this.config.name],
         moduleName: this.config.name,
       });
       return res.end(html);

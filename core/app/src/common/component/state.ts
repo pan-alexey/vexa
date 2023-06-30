@@ -1,4 +1,4 @@
-import type { Widget } from '../';
+import type { Widget } from '../types';
 
 const getNames = (layout: Widget[]): Record<string, boolean> => {
   const widgets: Record<string, boolean> = {};

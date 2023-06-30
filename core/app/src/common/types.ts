@@ -6,3 +6,9 @@ export interface ComponentMeta {
   name: string;
   version: string;
 }
+
+export interface Widget {
+  name: string;
+  props: unknown;
+  slots?: Record<string, Widget[]>;
+}

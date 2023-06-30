@@ -6,20 +6,20 @@ export interface RenderProps {
   publicTemplate: string;
   moduleName: string;
   hostApp: string;
-  ignoreModuleNames: Array<string>;
+  devModuleNames: Array<string>;
 }
 export const renderHtml = async ({
   app,
   state,
   publicTemplate,
-  ignoreModuleNames,
+  devModuleNames,
   moduleName,
-  hostApp
+  hostApp,
 }: RenderProps): Promise<string> => {
   // application assets // js // css
 
   // Render head (must be before render body)
-  const layoutAssets = await app.renderHead({ state, publicTemplate, ignoreModuleNames });
+  const layoutAssets = await app.renderHead({ state, publicTemplate, devModuleNames });
 
   const layoutScript: Array<string> = [];
   layoutAssets.js.forEach((js) => {
@@ -38,6 +38,7 @@ export const renderHtml = async ({
   const clientState = await app.renderState({
     state,
     publicTemplate,
+    devModuleNames,
   });
 
   const html = `<!DOCTYPE html>

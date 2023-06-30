@@ -21,18 +21,14 @@ export class Application {
     });
   }
 
-  public async renderHead(props: {
-    state: unknown;
-    publicTemplate: string;
-    ignoreModuleNames?: Array<string>;
-  }): Promise<{
+  public async renderHead(props: { state: unknown; publicTemplate: string; devModuleNames?: Array<string> }): Promise<{
     js: Array<string>;
     css: Record<string, string>;
   }> {
     return await this.layout.renderHead(props);
   }
 
-  public async renderState(props: { state: unknown; publicTemplate: string }) {
+  public async renderState(props: { state: unknown; publicTemplate: string; devModuleNames?: Array<string> }) {
     return this.layout.renderState(props);
   }
 

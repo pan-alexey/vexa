@@ -7,6 +7,8 @@ import { loadModule } from '../../libs/module/loadModule';
 import { loadManifest } from '../../libs/module/loadManifest';
 import type { ComponentMeta } from '../../../common/types';
 import { resolveTemplateUrls } from './helpers';
+import type { Widget } from '../../../common/types';
+import { getModuleNames } from '../../../common/component/state';
 
 export interface ModuleContext {
   useContext: () => unknown;
@@ -39,24 +41,25 @@ export class Registry {
     this.remoteUrls = props.remoteUrls;
   }
 
-  public setupRemoteWidgetUrl(widget: { name: string; staticPath: string }) {
-    this.remoteUrls[widget.name] = widget.staticPath; // rewrite if exist
+  public async getWidget(widgetName: string): Promise<RegistryComponent | null> {
+    const widget = this.moduleMap[widgetName];
+    return widget ? widget : null;
   }
 
   private injectWidget(widget: RegistryComponent) {
     this.moduleMap[widget.name] = widget;
   }
 
-  public async getWidget(widgetName: string): Promise<RegistryComponent | null> {
-    if (this.moduleMap[widgetName]) {
-      console.log('getWidget: cached', widgetName);
-      return this.moduleMap[widgetName];
-    }
+  public async prepareWidgets(layout: Widget[]): Promise<void> {
+    const names = getModuleNames(layout);
 
-    console.log('getWidget: no cache', widgetName);
-    await this.loadWidget(widgetName);
-    const widget = this.moduleMap[widgetName];
-    return widget ? widget : null;
+    const promises = names.map((name) => {
+      return this.loadWidget(name);
+    });
+
+    const re = await Promise.all(promises);
+
+    console.log('re', re);
   }
 
   public async loadWidget(widgetName: string): Promise<boolean> {
