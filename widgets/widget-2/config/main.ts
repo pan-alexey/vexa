@@ -1,14 +1,19 @@
 import config from '@vexa/cli';
 import path from 'path';
 import type { Config } from '@vexa/cli';
+import dotenv from 'dotenv';
 
 export default config(async () => {
   const config: Config = {
     name: 'widget.cms.navbar@2',
-    publish: async (env) => {
-      console.log('env', env);
+    publish: async () => {
+      dotenv.config();
       return {
-        key: '123',
+        BUCKET_NAME: process.env.BUCKET_NAME || '',
+        S3_ACCESS_KEY: process.env.S3_ACCESS_KEY || '',
+        S3_ENDPOINT: process.env.S3_ENDPOINT || '',
+        S3_ENDPOINT_PORT: process.env.S3_ENDPOINT_PORT || '',
+        S3_SECRET_KEY: process.env.S3_SECRET_KEY || '',
       };
     },
     debug: {

@@ -21,20 +21,21 @@ export default config(async () => {
         '*': 'https://cdn.webpan.org/cdn/{name}/widget.tgz',
         // 'widget.cms.navbar@2': 'http://127.0.0.1:9002/_static_/widget.tgz',
         // 'widget.cms.navbar@3': 'http://127.0.0.1:9003/_static_/widget.tgz',
-        'context.cms.main@1': 'http://127.0.0.1:8001/_static_/widget.tgz',
+        // 'context.cms.main@1': 'http://127.0.0.1:8001/_static_/widget.tgz',
       },
       getState: async (params) => {
         console.log('params', params);
 
         return {
           layout: [
-            { name: 'widget.cms.navbar@1', props: { data: 'data' } },
-            { name: 'widget.cms.navbar@3', props: { data: 'data' } },
-            { name: 'widget.cms.navbar@1', props: { data: 'data' } },
+            { name: 'widget.cms.navbar@1', props: { data: 'data', reqParam: params } },
+            { name: 'widget.cms.navbar@3', props: { data: 'data', reqParam: params } },
+            { name: 'widget.cms.navbar@1', props: { data: 'data', reqParam: params } },
             {
               name: 'widget.cms.navbar@1',
               props: {
                 props: 'props: widget.cms.navbar@1',
+                reqParam: params,
               },
               slots: {
                 slots1: [

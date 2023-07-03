@@ -25,7 +25,6 @@ const Component: React.FC<ComponentProps> = ({ props, children, hooks, slots }) 
 
   const context = hooks[1] ? (hooks[1].useContext() as { value: string; setValue: (value: string) => void }) : null;
 
-  console.log(context);
   // const context = hooks.length === 1 ? (hooks[1].useContext() as { value: string; setValue: () => void }) : null;
 
   return (
