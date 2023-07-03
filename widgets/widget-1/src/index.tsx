@@ -13,6 +13,11 @@ const LazyComponent = React.lazy(() => import('./components/' + name));
 // 2sd
 const Component: React.FC<ComponentProps> = ({ props, children, hooks, slots }) => {
   const [count, setCount] = React.useState(1);
+  const [time, setTime] = React.useState('');
+
+  React.useEffect(() => {
+    setTime(moment().format());
+  }, []);
 
   const handelCount = () => {
     setCount(count + 1);
@@ -34,7 +39,7 @@ const Component: React.FC<ComponentProps> = ({ props, children, hooks, slots }) 
         Widget #1 <button onClick={handelCount}>Count [{count}]</button>
       </div>
       <div>data: ${JSON.stringify(props)}</div>
-      <div>time {moment().format()}</div>
+      <div>time {time}</div>
       {/* <div>rootContext value {rootContext.value}</div>
       <div>parentContext value111 {parentContext.value as string | null}</div> */}
       <div data-name="React lazy:">

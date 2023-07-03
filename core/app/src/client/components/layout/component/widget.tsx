@@ -17,8 +17,10 @@ export const makeWidget = ({
   const elementSlots = slots || {};
 
   return (
-    <Context>
-      <Element props={props} hooks={context.hooks} slots={elementSlots} />
-    </Context>
+    <div data-module-name="widget.cms.navbar@1">
+      <Context>
+        <Element props={props} hooks={context.hooks} slots={elementSlots} />
+      </Context>
+    </div>
   );
 };

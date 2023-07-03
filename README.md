@@ -2,6 +2,7 @@
 Vexa - backend driven frontend platform
 
 
-1. Remote rendering !!! (CORE APP)
+yarn install
+yarn run dev
 
 

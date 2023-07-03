@@ -58,13 +58,13 @@ export const App = async (Widget?: React.ElementType) => {
 
   const Layout = await application.layout.make(APP_STATE.state);
 
-  const root = createRoot(container);
-  root.render(<React.Fragment>{Layout}</React.Fragment>);
+  // const root = createRoot(container);
+  // root.render(<React.Fragment>{Layout}</React.Fragment>);
 
-  // if (container.hasChildNodes()) {
-  //   hydrateRoot(container, <React.Fragment>{Layout}</React.Fragment>);
-  // } else {
-  //   const root = createRoot(container);
-  //   root.render(<React.Fragment>{Layout}</React.Fragment>);
-  // }
+  if (container.hasChildNodes()) {
+    hydrateRoot(container, <React.Fragment>{Layout}</React.Fragment>);
+  } else {
+    const root = createRoot(container);
+    root.render(<React.Fragment>{Layout}</React.Fragment>);
+  }
 };
