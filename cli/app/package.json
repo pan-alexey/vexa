@@ -32,6 +32,7 @@
     "@types/tar": "^6.1.4"
   },
   "dependencies": {
+    "dotenv": "^16.3.1",
     "tar": "^6.1.14",
     "lodash": "^4.17.21",
     "fs-extra": "^11.1.1",

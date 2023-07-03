@@ -13,6 +13,7 @@ const name = 'lazy';
 const LazyComponent = React.lazy(() => import('./components/' + name));
 // 2sd
 const Component: React.FC<ComponentProps> = ({ data, slots, contexts }) => {
+  const [time, setTime] = React.useState('');
   if (contexts) {
     // @ts-ignore
     const useContext1 = contexts[0]();
@@ -23,7 +24,7 @@ const Component: React.FC<ComponentProps> = ({ data, slots, contexts }) => {
     <div className={styles.root}>
       <div>Widget #3.0.0</div>
       <div>data: ${JSON.stringify(data)}</div>
-      <div>time {moment().format()}</div>
+      <div>time {time}</div>
       <div>context</div>
       <div data-name="React lazy:">
         <React.Suspense>

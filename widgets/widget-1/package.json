@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vexa-cli dev --config ./config/main.ts",
-    "publish": "vexa-cli publish",
+    "publish": "vexa-cli publish --",
     "tar": "tar -C dist -czvf dist.tgz ./ && cp dist.tgz dist",
     "server": "http-server ./dist -p 8081",
     "lint": "eslint ./ --ext .ts,.tsx,.js,.jsx",
@@ -16,6 +16,7 @@
     "moment": "^2.29.4"
   },
   "devDependencies": {
+    "dotenv": "^16.3.1",
     "@vexa/eslint-config": "^1.0.0",
     "@vexa/prettier-config": "^1.0.0",
     "@vexa/cli": "^1.0.0",

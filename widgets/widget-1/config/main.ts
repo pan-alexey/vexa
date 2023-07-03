@@ -1,10 +1,21 @@
 import config from '@vexa/cli';
-import path from 'path';
 import type { Config } from '@vexa/cli';
+import dotenv from 'dotenv';
 
 export default config(async () => {
   const config: Config = {
     name: 'widget.cms.navbar@1',
+    publish: async () => {
+      dotenv.config();
+
+      return {
+        BUCKET_NAME: 'panda',
+        MINIO_ACCESS_KEY: 'xpa0HDuMiwXWQuZO',
+        MINIO_ENDPOINT: '194.61.0.202',
+        MINIO_ENDPOINT_PORT: '8080',
+        MINIO_SECRET_KEY: '1yh9A3uzRHVbvrM6kHGVH846x8PsZtHJ',
+      };
+    },
     debug: {
       httpPort: 9001,
       remotes: {

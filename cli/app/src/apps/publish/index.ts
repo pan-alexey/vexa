@@ -7,6 +7,8 @@ export class Publish {
   }
 
   public async run(): Promise<void> {
-    console.log('publish');
+    const conf = await this.config.publish();
+
+    console.log(conf);
   }
 }

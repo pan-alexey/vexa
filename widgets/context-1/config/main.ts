@@ -5,6 +5,12 @@ import type { Config } from '@vexa/cli';
 export default config(async () => {
   const config: Config = {
     name: 'context.cms.main@1',
+    publish: async (env) => {
+      console.log('env', env);
+      return {
+        key: '123',
+      };
+    },
     debug: {
       httpPort: 8001,
       remotes: {
