@@ -23,15 +23,10 @@ const Component: React.FC<ComponentProps> = ({ props, children, hooks, slots }) 
     setCount(count + 1);
   };
 
-  // console.log('hooks', hooks[0].useContext());
-  // const rootContext = hooks[0].useContext() as { value: string };
-  // let parentContext: { value: unknown } = { value: null };
-  // if (hooks[1]) {
-  //   parentContext = hooks[1].useContext() as { value: string };
-  //   // console.log('parentContext', parentContext);
-  // }
-  // console.log('styles', styles);
-  // console.log('slots', slots);
+  const context = hooks[1] ? (hooks[1].useContext() as { value: string; setValue: (value: string) => void }) : null;
+
+  console.log(context);
+  // const context = hooks.length === 1 ? (hooks[1].useContext() as { value: string; setValue: () => void }) : null;
 
   return (
     <div className={styles.root}>
@@ -40,6 +35,8 @@ const Component: React.FC<ComponentProps> = ({ props, children, hooks, slots }) 
       </div>
       <div>data: ${JSON.stringify(props)}</div>
       <div>time {time}</div>
+      {context && <div onClick={() => context.setValue(String(Math.random()))}>context value {context.value}</div>}
+
       {/* <div>rootContext value {rootContext.value}</div>
       <div>parentContext value111 {parentContext.value as string | null}</div> */}
       <div data-name="React lazy:">

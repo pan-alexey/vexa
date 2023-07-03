@@ -25,18 +25,23 @@ export class Layout {
   }
 
   private makeWidgetList(widgets: Widget[], context: Context): React.ReactElement {
+    // Как будто бы обернуть в контекст надо тут!!!
+    const Context = context.provider;
+
     return (
       <>
-        {widgets.map((widget) => {
-          const component = this.makeElement({
-            name: widget.name,
-            props: widget.props,
-            slots: widget.slots || {},
-            context,
-          });
+        <Context>
+          {widgets.map((widget) => {
+            const component = this.makeElement({
+              name: widget.name,
+              props: widget.props,
+              slots: widget.slots || {},
+              context,
+            });
 
-          return <React.Fragment key={getUniqueId()}>{component}</React.Fragment>;
-        })}
+            return <React.Fragment key={getUniqueId()}>{component}</React.Fragment>;
+          })}
+        </Context>
       </>
     );
   }
@@ -60,6 +65,7 @@ export class Layout {
         </div>
       );
     }
+
     if (module.meta.type === 'widget') {
       const widgetSlots: Record<string, React.ReactElement> = {};
       Object.keys(slots).forEach((key) => {
@@ -73,6 +79,7 @@ export class Layout {
         slots: widgetSlots,
       });
     }
+
     if (module.meta.type === 'context') {
       const children = slots.children;
       if (children === undefined) {
