@@ -6,6 +6,7 @@ import { makeRootContext, makeContext } from './component/context';
 import { makeWidget } from './component/widget';
 import type { Context } from './component/context';
 import type { Registry, ModuleContext } from '../registry';
+import { ErrorBoundary } from '../../libs/helper/errorBoundary';
 export interface LayoutProps {
   registry: Registry;
 }
@@ -25,9 +26,7 @@ export class Layout {
   }
 
   private makeWidgetList(widgets: Widget[], context: Context): React.ReactElement {
-    // Как будто бы обернуть в контекст надо тут!!!
     const Context = context.provider;
-
     return (
       <>
         <Context>
@@ -72,12 +71,14 @@ export class Layout {
         widgetSlots[key] = this.makeWidgetList(slots[key], context);
       });
 
-      return makeWidget({
+      const component = makeWidget({
         element: module.module as React.ElementType,
         props,
         context,
         slots: widgetSlots,
       });
+
+      return <ErrorBoundary name={name}>{component}</ErrorBoundary>;
     }
 
     if (module.meta.type === 'context') {

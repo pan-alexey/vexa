@@ -1,6 +1,6 @@
 import React from 'react';
 import { Context } from './context';
-
+import { ErrorBoundary } from '../../../libs/helper/errorBoundary'
 export const makeWidget = ({
   element,
   props,
@@ -14,9 +14,5 @@ export const makeWidget = ({
 }): React.ReactElement => {
   const Element = element;
   const elementSlots = slots || {};
-  return (
-    <div data-module-name="widget.cms.navbar@1">
-      <Element props={props} hooks={context.hooks} slots={elementSlots} />
-    </div>
-  );
+  return <Element props={props} hooks={context.hooks} slots={elementSlots} />;
 };

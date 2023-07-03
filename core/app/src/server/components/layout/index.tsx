@@ -112,6 +112,7 @@ export class Layout {
       promises.push(element);
     }
     const elements = await Promise.all(promises);
+
     return (
       <>
         {elements.map((element) => {
