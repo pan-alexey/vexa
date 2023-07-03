@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vexa-cli dev --config ./config/main.ts",
+    "publish": "vexa-cli publish",
     "serve": "yarn run tar && yarn run server",
     "tar": "tar -C dist -czvf dist.tgz ./ && cp dist.tgz dist",
     "server": "http-server ./dist -p 8081",
@@ -16,6 +17,7 @@
     "moment": "^2.29.4"
   },
   "devDependencies": {
+    "dotenv": "^16.3.1",
     "@vexa/cli": "^1.0.0",
     "@types/node": "^18.15.2",
     "@types/react": "^18.0.15",

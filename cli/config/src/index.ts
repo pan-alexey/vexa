@@ -7,10 +7,10 @@ export interface Config {
   publish: () => Promise<{
     [x: string]: unknown;
     BUCKET_NAME: string;
-    MINIO_ACCESS_KEY: string;
-    MINIO_ENDPOINT: string;
-    MINIO_ENDPOINT_PORT: string;
-    MINIO_SECRET_KEY: string;
+    S3_ACCESS_KEY: string;
+    S3_ENDPOINT: string;
+    S3_ENDPOINT_PORT: string;
+    S3_SECRET_KEY: string;
   }>;
   debug: {
     remotes: Record<string, string>;

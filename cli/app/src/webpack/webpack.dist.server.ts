@@ -14,8 +14,8 @@ export default (config: Config): Configuration => {
 
   const webpackConfig: Configuration = {
     target: 'node',
-    mode: 'development',
-    devtool: 'source-map',
+    mode: 'production',
+    devtool: 'hidden-source-map',
     // entry: {
     //   index: widgetBootstrap,
     // },
@@ -92,7 +92,7 @@ export default (config: Config): Configuration => {
       ],
     },
     plugins: [
-      new CleanWebpackPlugin(),
+      // new CleanWebpackPlugin(),
       new ModuleFederationPlugin({
         name: widgetName,
         library: { type: 'commonjs-module' },

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vexa-cli dev --config ./config/main.ts",
-    "publish": "vexa-cli publish --",
+    "publish": "vexa-cli publish",
     "tar": "tar -C dist -czvf dist.tgz ./ && cp dist.tgz dist",
     "server": "http-server ./dist -p 8081",
     "lint": "eslint ./ --ext .ts,.tsx,.js,.jsx",

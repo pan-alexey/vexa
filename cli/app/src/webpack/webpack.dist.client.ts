@@ -101,7 +101,7 @@ export default (config: Config): Configuration => {
       new ManifestAssetsPluginDist({
         output: path.resolve(widgetBuildServer, 'manifest.json')
       }),
-      new CleanWebpackPlugin(),
+      // new CleanWebpackPlugin(),
       new ModuleFederationPlugin({
         name: widgetName,
         library: { type: 'window', name: ['__modules__', widgetName] },

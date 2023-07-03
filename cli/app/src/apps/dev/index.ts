@@ -57,6 +57,9 @@ export class Application {
 
   public async prepare() {
     await fs.emptyDir(constants.widgetBuild);
+    await fs.emptyDir(constants.widgetBuildServer);
+    await fs.emptyDir(constants.widgetBuildClient);
+    await fs.emptyDir(constants.widgetDist);
     await fs.emptyDir(constants.widgetDist);
   }
 

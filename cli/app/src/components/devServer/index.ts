@@ -1,5 +1,6 @@
 import * as http from 'http';
 import path from 'path';
+import fs from 'fs-extra';
 import { AddressInfo } from 'net';
 import type { Config } from '@vexa/cli-config';
 import webpack from 'webpack';
@@ -65,6 +66,7 @@ export class DevServer {
       // Маловеротяно что рендеринг будет более 300ms
       await new Promise((resolve) => setTimeout(resolve, 200));
       this.application.registry.clear();
+
       this.ready(true);
 
       const state = await this.config.debug.getState({

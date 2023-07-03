@@ -1,4 +1,6 @@
 import type { Config } from '@vexa/cli-config';
+import path from 'path';
+import { Uploader } from './utils/upload';
 
 export class Publish {
   private config: Config;
@@ -8,7 +10,8 @@ export class Publish {
 
   public async run(): Promise<void> {
     const conf = await this.config.publish();
-
-    console.log(conf);
+    const dist = path.resolve(process.cwd(), 'dist');
+    const uploader = new Uploader(conf);
+    await uploader.uploadDir(dist, this.config.name);
   }
 }

@@ -6,7 +6,7 @@ import { mkdirp } from 'mkdirp';
 
 const customAgents = {
   http: new Http.Agent({ keepAlive: true }),
-  https: new Http.Agent({ keepAlive: true }),
+  https: new Https.Agent({ keepAlive: true }),
 };
 
 export const download = async (url: string, output: string) =>
