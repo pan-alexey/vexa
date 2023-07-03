@@ -3,7 +3,7 @@ const program = new Command();
 
 export interface CommandConfig {
   config: string;
-  mode: 'build' | 'dev';
+  mode: 'build' | 'dev' | 'publish' | 'test';
 }
 
 export default (): Promise<CommandConfig> =>
@@ -38,5 +38,36 @@ export default (): Promise<CommandConfig> =>
 
         resolve(result);
       });
+
+    program
+      .command('publish')
+      .description('Publish widget to storage')
+      .addOption(
+        new Option('-c, --config <config>', 'configuration path').default('./config/main.ts', './config/main.ts'),
+      )
+      .action((args) => {
+        const result: CommandConfig = {
+          mode: 'publish',
+          config: args.config,
+        };
+
+        resolve(result);
+      });
+
+    program
+      .command('test')
+      .description('Test widget')
+      .addOption(
+        new Option('-c, --config <config>', 'configuration path').default('./config/main.ts', './config/main.ts'),
+      )
+      .action((args) => {
+        const result: CommandConfig = {
+          mode: 'test',
+          config: args.config,
+        };
+
+        resolve(result);
+      });
+
     program.parse();
   });

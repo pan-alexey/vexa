@@ -9,7 +9,7 @@ export class App {
     this.config = config;
   }
 
-  public async run(mode: 'build' | 'dev' | 'publish') {
+  public async run(mode: 'build' | 'dev' | 'publish' | 'test') {
     switch (mode) {
       case 'dev':
         new AppDev(this.config).run();

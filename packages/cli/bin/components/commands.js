@@ -26,5 +26,27 @@ exports.default = () => new Promise((resolve) => {
         };
         resolve(result);
     });
+    program
+        .command('publish')
+        .description('Publish widget to storage')
+        .addOption(new commander_1.Option('-c, --config <config>', 'configuration path').default('./config/main.ts', './config/main.ts'))
+        .action((args) => {
+        const result = {
+            mode: 'publish',
+            config: args.config,
+        };
+        resolve(result);
+    });
+    program
+        .command('test')
+        .description('Test widget')
+        .addOption(new commander_1.Option('-c, --config <config>', 'configuration path').default('./config/main.ts', './config/main.ts'))
+        .action((args) => {
+        const result = {
+            mode: 'test',
+            config: args.config,
+        };
+        resolve(result);
+    });
     program.parse();
 });
