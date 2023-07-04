@@ -68,9 +68,7 @@ export default (config: Config): Configuration => {
         {
           test: /\.tsx?$/,
           loader: 'babel-loader',
-          exclude: /node_modules/,
           options: {
-            exclude: /node_modules/,
             presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'],
           },
         },

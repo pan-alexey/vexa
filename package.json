@@ -31,6 +31,7 @@
     "rimraf": "^4.4.1"
   },
   "scripts": {
+    "version": "lerna version --no-private",
     "bootstrap": "yarn install && yarn run lerna:bootstrap",
     "dev": "yarn run clear && yarn run bootstrap && yarn run lerna:build",
     "dev:app": "lerna run build --scope=@vexa/core-app && lerna run build --scope=@vexa/cli-app",
