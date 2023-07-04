@@ -32,5 +32,6 @@
   },
   "dependencies": {
     "@vexa/core-app": "^1.0.1"
-  }
+  },
+  "gitHead": "d53ff477902883dc6f757b4b0978ccbe1705d4a1"
 }

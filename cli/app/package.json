@@ -60,5 +60,6 @@
     "typescript": "^5.0.3",
     "webpack": "^5.79.0",
     "webpack-hmr-server": "^1.1.10"
-  }
+  },
+  "gitHead": "d53ff477902883dc6f757b4b0978ccbe1705d4a1"
 }

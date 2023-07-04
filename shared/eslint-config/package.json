@@ -14,5 +14,6 @@
     "eslint-plugin-unicorn": "^46.0.0",
     "prettier": "^2.8.7",
     "typescript": "^5.0.3"
-  }
+  },
+  "gitHead": "d53ff477902883dc6f757b4b0978ccbe1705d4a1"
 }
