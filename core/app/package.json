@@ -1,6 +1,6 @@
 {
   "name": "@vexa/core-app",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Pan Alexey <pan-alexey@live.com>",
   "license": "MIT",
   "main": "./dist/server/index.js",
@@ -43,8 +43,8 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@types/webpack": "^5.28.1",
-    "@vexa/eslint-config": "^1.0.1",
-    "@vexa/prettier-config": "^1.0.1",
+    "@vexa/eslint-config": "^1.0.2",
+    "@vexa/prettier-config": "^1.0.2",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
     "eslint": "^8.0.0",

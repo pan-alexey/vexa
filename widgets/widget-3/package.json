@@ -1,6 +1,6 @@
 {
   "name": "@vexa/widgets-widget3",
-  "version": "1.0.0-dev",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "vexa-cli dev --config ./config/main.ts",
@@ -12,17 +12,17 @@
     "lint:fix": "yarn lint --fix"
   },
   "dependencies": {
+    "moment": "^2.29.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "moment": "^2.29.4"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "dotenv": "^16.3.1",
-    "@vexa/cli": "^1.0.0",
     "@types/node": "^18.15.2",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@types/webpack": "^5.28.0",
+    "@vexa/cli": "^1.0.3",
+    "dotenv": "^16.3.1",
     "typescript": "^5.0.3"
   }
 }
