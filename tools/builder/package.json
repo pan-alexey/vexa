@@ -1,6 +1,6 @@
 {
   "name": "@vexa/tools-builder",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -21,8 +21,8 @@
     "@types/jest": "^29.5.0",
     "@types/node": "^18.15.11",
     "@types/webpack": "^5.28.1",
-    "@vexa/eslint-config": "^1.0.4",
-    "@vexa/prettier-config": "^1.0.4",
+    "@vexa/eslint-config": "^1.0.5",
+    "@vexa/prettier-config": "^1.0.5",
     "jest": "^29.5.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^29.1.0",
