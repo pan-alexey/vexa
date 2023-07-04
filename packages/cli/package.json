@@ -1,6 +1,6 @@
 {
   "name": "@vexa/cli",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "./dist/main.js",
   "types": "./dist/main.d.ts",
   "files": [
@@ -36,7 +36,7 @@
     "ts-jest": "^28.0.7"
   },
   "dependencies": {
-    "@vexa/cli-app": "^1.0.6",
+    "@vexa/cli-app": "^1.0.7",
     "@vexa/cli-config": "^1.0.5",
     "commander": "^10.0.0",
     "fs-extra": "^11.1.1",
