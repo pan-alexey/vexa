@@ -33,7 +33,7 @@ export const renderHtml = async ({
   });
 
   // Render Body
-  const body = await app.renderBody(state);
+  //const body = await app.renderBody(state);
 
   const clientState = await app.renderState({
     state,
