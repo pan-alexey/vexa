@@ -1,6 +1,6 @@
 {
   "name": "@vexa/eslint-config",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "publishConfig": {
     "access": "public"
@@ -11,8 +11,8 @@
     "eslint": "^8.37.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "prettier":"^2.8.7",
-    "typescript": "^5.0.3",
-    "eslint-plugin-unicorn": "^46.0.0"
+    "eslint-plugin-unicorn": "^46.0.0",
+    "prettier": "^2.8.7",
+    "typescript": "^5.0.3"
   }
 }
