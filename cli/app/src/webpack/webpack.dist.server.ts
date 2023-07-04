@@ -16,9 +16,6 @@ export default (config: Config): Configuration => {
     target: 'node',
     mode: 'production',
     devtool: 'hidden-source-map',
-    // entry: {
-    //   index: widgetBootstrap,
-    // },
     entry: widgetNullEntry,
     output: {
       publicPath: 'auto',
