@@ -32,6 +32,7 @@
   },
   "scripts": {
     "version": "lerna version --no-private",
+    "publish": "lerna exec npm publish", 
     "bootstrap": "yarn install && yarn run lerna:bootstrap",
     "dev": "yarn run clear && yarn run bootstrap && yarn run lerna:build",
     "dev:app": "lerna run build --scope=@vexa/core-app && lerna run build --scope=@vexa/cli-app",
