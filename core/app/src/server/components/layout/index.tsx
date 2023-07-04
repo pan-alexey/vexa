@@ -170,7 +170,8 @@ export class Layout {
           context,
           slots: widgetSlots,
         });
-        const html = await renderComponent(Component);
+        const Context = context.provider;
+        const html = await renderComponent(<Context>{Component}</Context>);
         return <div data-module-name={name} dangerouslySetInnerHTML={{ __html: html }} />;
       } catch (error) {
         console.log('Error widget render', error);

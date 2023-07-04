@@ -5,13 +5,13 @@ import styles from './styles.module.css';
 interface ComponentProps {
   contexts: unknown[];
   props?: unknown;
-  children?: React.ReactNode;
+  slots: Record<string, React.ReactNode>;
   hooks: Array<{ name: string; useContext: () => unknown }>;
 }
 const name = 'lazy';
 const LazyComponent = React.lazy(() => import('./components/' + name));
 // 2sd
-const Component: React.FC<ComponentProps> = ({ props, children, hooks, slots }) => {
+const Component: React.FC<ComponentProps> = ({ props, hooks, slots }) => {
   const [count, setCount] = React.useState(1);
   const [time, setTime] = React.useState('');
 
@@ -23,8 +23,15 @@ const Component: React.FC<ComponentProps> = ({ props, children, hooks, slots }) 
     setCount(count + 1);
   };
 
-  const context = hooks[1] ? (hooks[1].useContext() as { value: string; setValue: (value: string) => void }) : null;
+  const ctx1 = hooks[1]
+    ? (hooks[1].useContext() as { props: unknown; value: string; setValue: (value: string) => void })
+    : null;
 
+  const ctx2 = hooks[2]
+    ? (hooks[2].useContext() as { props: unknown; value: string; setValue: (value: string) => void })
+    : null;
+
+  console.log('context', ctx1, ctx2);
   // const context = hooks.length === 1 ? (hooks[1].useContext() as { value: string; setValue: () => void }) : null;
 
   return (
@@ -34,10 +41,19 @@ const Component: React.FC<ComponentProps> = ({ props, children, hooks, slots }) 
       </div>
       <div>data: ${JSON.stringify(props)}</div>
       <div>time {time}</div>
-      {context && <div onClick={() => context.setValue(String(Math.random()))}>context value {context.value}</div>}
+      {ctx1 && (
+        <div>
+          <div onClick={() => ctx1.setValue(String(Math.random()))}>context value {ctx1.value}</div>
+          <div>Context props {JSON.stringify(ctx1.props)}</div>
+        </div>
+      )}
 
-      {/* <div>rootContext value {rootContext.value}</div>
-      <div>parentContext value111 {parentContext.value as string | null}</div> */}
+      {ctx2 && (
+        <div>
+          <div onClick={() => ctx2.setValue(String(Math.random()))}>context value {ctx2.value}</div>
+          <div>Context props {JSON.stringify(ctx2.props)}</div>
+        </div>
+      )}
       <div data-name="React lazy:">
         <React.Suspense>
           <LazyComponent />

@@ -12,13 +12,8 @@ export const makeWidget = ({
   context: Context;
   slots: Record<string, React.ReactElement>;
 }): React.ReactElement => {
-  const Context = context.provider;
   const Element = element;
   const elementSlots = slots || {};
 
-  return (
-    <Context>
-      <Element props={props} hooks={context.hooks} slots={elementSlots} />
-    </Context>
-  );
+  return <Element props={props} hooks={context.hooks} slots={elementSlots} />;
 };

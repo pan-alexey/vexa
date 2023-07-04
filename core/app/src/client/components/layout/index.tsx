@@ -27,6 +27,8 @@ export class Layout {
 
   private makeWidgetList(widgets: Widget[], context: Context): React.ReactElement {
     const Context = context.provider;
+
+    // use
     return (
       <>
         <Context>

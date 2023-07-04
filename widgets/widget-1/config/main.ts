@@ -24,44 +24,52 @@ export default config(async () => {
         // 'context.cms.main@1': 'http://127.0.0.1:8001/_static_/widget.tgz',
       },
       getState: async (params) => {
-        console.log('params', params);
-
         return {
           layout: [
-            { name: 'widget.cms.navbar@1', props: { data: 'data', reqParam: params } },
-            { name: 'widget.cms.navbar@3', props: { data: 'data', reqParam: params } },
-            { name: 'widget.cms.navbar@1', props: { data: 'data', reqParam: params } },
-            {
-              name: 'widget.cms.navbar@1',
-              props: {
-                props: 'props: widget.cms.navbar@1',
-                reqParam: params,
-              },
-              slots: {
-                slots1: [
-                  { name: 'widget.cms.navbar@1', props: { data: 'data' } },
-                  { name: 'widget.cms.navbar@3', props: { data: 'data' } },
-                ],
-                slots2: [
-                  { name: 'widget.cms.navbar@2', props: { data: 'data' } },
-                  { name: 'widget.cms.navbar@3', props: { data: 'data' } },
-                ],
-              },
-            },
-            { name: 'widget.cms.navbar@2', props: { data: 'data' } },
             {
               name: 'context.cms.main@1',
               props: {
-                props: 'props1',
+                props: 'lvl1',
               },
               slots: {
                 children: [
-                  { name: 'widget.cms.navbar@1', props: { data: 'data' } },
-                  { name: 'widget.cms.navbar@3', props: { data: 'data' } },
-                  { name: 'widget.cms.navbar@1', props: { data: 'data' } },
+                  { name: 'widget.cms.navbar@1', props: { data: 'data', reqParam: params } },
+                  { name: 'widget.cms.navbar@3', props: { data: 'data', reqParam: params } },
+                  { name: 'widget.cms.navbar@1', props: { data: 'data', reqParam: params } },
+                  {
+                    name: 'widget.cms.navbar@1',
+                    props: {
+                      props: 'props: widget.cms.navbar@1',
+                      reqParam: params,
+                    },
+                    slots: {
+                      slots1: [
+                        { name: 'widget.cms.navbar@1', props: { data: 'data' } },
+                        { name: 'widget.cms.navbar@3', props: { data: 'data' } },
+                      ],
+                      slots2: [
+                        { name: 'widget.cms.navbar@2', props: { data: 'data' } },
+                        { name: 'widget.cms.navbar@3', props: { data: 'data' } },
+                      ],
+                    },
+                  },
                   { name: 'widget.cms.navbar@2', props: { data: 'data' } },
-                ],
-              },
+                  {
+                    name: 'context.cms.main@1',
+                    props: {
+                      props: 'lvl2',
+                    },
+                    slots: {
+                      children: [
+                        { name: 'widget.cms.navbar@1', props: { data: 'data' } },
+                        { name: 'widget.cms.navbar@3', props: { data: 'data' } },
+                        { name: 'widget.cms.navbar@1', props: { data: 'data' } },
+                        { name: 'widget.cms.navbar@2', props: { data: 'data' } },
+                      ],
+                    },
+                  },
+                ]
+              }
             },
           ],
         };
