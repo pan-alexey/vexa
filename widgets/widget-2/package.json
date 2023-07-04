@@ -1,6 +1,6 @@
 {
   "name": "@vexa/widgets-widget2",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "dev": "vexa-cli dev --config ./config/main.ts",
@@ -21,7 +21,7 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@types/webpack": "^5.28.0",
-    "@vexa/cli": "^1.0.3",
+    "@vexa/cli": "^1.0.5",
     "dotenv": "^16.3.1",
     "typescript": "^5.0.3"
   }

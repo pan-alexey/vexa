@@ -155,6 +155,8 @@ export class Application {
       }
 
       console.log('Build has error. Server not ready');
+
+      console.log(state.serverApp.compiler.stats?.toString());
     } catch (error) {
       console.log('Error register application');
     }
